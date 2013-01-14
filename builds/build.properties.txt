@@ -1,0 +1,15 @@
+build.version=dev
+build.version=dev
+component.name=cmandrill
+component.upperName=CMANDRILL
+modules=
+modules_admin=
+plugins=plg_system_mandrill
+
+; FTP Options
+ftp.host=ftp.example.com
+ftp.port=21
+ftp.username=username
+ftp.password=password
+ftp.dir=/path/to/directory
+ftp.mode=binary
