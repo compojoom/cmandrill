@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fieldset addfieldpath="/administrator/components/com_cmandrill/models/fields">
+		<field name="id" type="text" default="0" label="JGLOBAL_FIELD_ID_LABEL"
+			   readonly="true" class="readonly"
+			   description="JGLOBAL_FIELD_ID_DESC"/>
+
+		<field name="title" type="text" class="inputbox"
+			   size="40" label="JGLOBAL_TITLE"
+			   description="COM_CMANDRILL_FIELD_TITLE_DESC" required="true" />
+
+		<field
+				name="state"
+				type="list"
+				label="JSTATUS"
+				description="COM_CMANDILL_FIELD_STATE_DESC"
+				class="inputbox"
+				size="1"
+				default="1">
+			<option
+					value="1">JPUBLISHED</option>
+			<option
+					value="0">JUNPUBLISHED</option>
+		</field>
+
+		<field name="created" type="calendar"
+			   label="JGLOBAL_FIELD_CREATED_LABEL" description="JGLOBAL_FIELD_CREATED_DESC"
+			   class="inputbox" size="22" format="%Y-%m-%d %H:%M:%S"
+			   filter="user_utc" />
+
+		<field name="created_by" type="user"
+			   label="JGLOBAL_FIELD_CREATED_BY_LABEL" description="JGLOBAL_FIELD_CREATED_BY_Desc" />
+
+		<field name="publish_up" type="calendar"
+			   label="JGLOBAL_FIELD_PUBLISH_UP_LABEL" description="JGLOBAL_FIELD_PUBLISH_UP_DESC"
+			   class="inputbox" format="%Y-%m-%d %H:%M:%S" size="22"
+			   filter="user_utc" />
+
+		<field name="publish_down" type="calendar"
+			   label="JGLOBAL_FIELD_PUBLISH_DOWN_LABEL" description="JGLOBAL_FIELD_PUBLISH_DOWN_DESC"
+			   class="inputbox" format="%Y-%m-%d %H:%M:%S" size="22"
+			   filter="user_utc" />
+
+		<field name="template" type="templates" class="inputbox"
+			   size="1" label="COM_CMANDRILL_FIELD_TEMPLATE"
+			   description="COM_CMANDRILL_FIELD_TEMPLATE_DESC" required="true" />
+
+		<field name="component" type="components" class="inputbox"
+			   size="1" label="COM_CMANDRILL_FIELD_COMPONENT"
+			   description="COM_CMANDRILL_FIELD_COMPONENT_DESC" required="true" />
+
+		<field name="view" type="text" class="inputbox"
+			   size="40" label="COM_CMANDRILL_FIELD_VIEW"
+			   description="COM_CMANDRILL_FIELD_VIEW_DESC" />
+
+		<field name="task" type="text" class="inputbox"
+			   size="40" label="COM_CMANDRILL_FIELD_TASK"
+			   description="COM_CMANDRILL_FIELD_TASK_DESC" />
+
+	</fieldset>
+</form>

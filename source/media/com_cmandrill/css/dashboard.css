@@ -1,0 +1,17 @@
+.stat-block {
+	text-align: center;
+}
+.report-stat .stat {
+	font-size: 30px;
+}
+.stat-block .stat {
+	color: #0D7CAD;
+	font-size: 20px;
+	font-weight: bold;
+	line-height: 100%;
+	display: block;
+}
+.stat {
+	font-weight: bold;
+	line-height: 100%;
+}

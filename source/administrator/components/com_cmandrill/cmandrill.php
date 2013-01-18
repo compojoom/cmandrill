@@ -9,3 +9,30 @@
  
 defined('_JEXEC') or die('Restricted access');
 
+// Access check.
+if (!JFactory::getUser()->authorise('core.manage', 'com_cmandrill')) {
+	throw new Exception(404, JText::_('JERROR_ALERTNOAUTHOR'));
+}
+
+// first lets make sure that all the lang files are loaded
+// thank you for this black magic Nickolas :)
+// Magic: merge the default translation with the current translation
+$jlang = JFactory::getLanguage();
+$jlang->load('com_cmandrill', JPATH_ADMINISTRATOR, 'en-GB', true);
+$jlang->load('com_cmandrill', JPATH_ADMINISTRATOR, $jlang->getDefault(), true);
+$jlang->load('com_cmandrill', JPATH_ADMINISTRATOR, null, true);
+
+JLoader::discover('cmandrillHelper', JPATH_COMPONENT_ADMINISTRATOR.'/helpers/');
+JTable::addIncludePath(JPATH_COMPONENT . '/tables');
+
+$input = JFactory::getApplication()->input;
+if($input->getCmd('view','') == 'liveupdate') {
+	JToolBarHelper::preferences( 'com_cmandrill' );
+	LiveUpdate::handleRequest();
+	return;
+}
+
+
+$controller = JControllerLegacy::getInstance('Cmandrill');
+$controller->execute($input->getCmd('task'));
+$controller->redirect();

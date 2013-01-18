@@ -6,7 +6,7 @@
  * @copyright  Copyright (C) 2008 - 2013 compojoom.com . All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
- 
+
 defined('_JEXEC') or die('Restricted access');
 
 
@@ -17,8 +17,9 @@ class com_cmandrillInstallerScript extends CompojoomInstaller
 	 */
 	public $release = '1.0';
 	public $minimum_joomla_release = '2.5.6';
-	public $extension = 'com_cmandrilla';
+	public $extension = 'com_cmandrill';
 	private $type = '';
+	private $status = '';
 
 	private $installationQueue = array(
 		// modules => { (folder) => { (module) => { (position), (published) } }* }*
@@ -26,7 +27,7 @@ class com_cmandrillInstallerScript extends CompojoomInstaller
 
 		),
 		'plugins' => array(
-			'plg_system_mandrill' => 0
+			'plg_system_mandrill' => 1
 		)
 	);
 
@@ -67,17 +68,19 @@ class com_cmandrillInstallerScript extends CompojoomInstaller
 	public function postflight($type, $parent)
 	{
 		$this->loadLanguage();
+		$this->status = new stdClass();
 		$this->update = CmandrillInstallerHelper::checkIfUpdating();
 
 		switch ($this->update) {
 			case 'plugin':
-
+				CmandrillInstallerHelper::updateFromOldPlugin();
 			case 'new':
 
 				break;
 		}
 
 		// let us install the modules
+
 		$this->status->plugins = $this->installPlugins($this->installationQueue['plugins']);
 		$this->status->modules = $this->installModules($this->installationQueue['modules']);
 
@@ -210,7 +213,7 @@ class CompojoomInstaller
 		return $status;
 	}
 
-	public function uninstallModules($modulesToUninstall)
+	public function uninstallModules($modulesToUninstall = array())
 	{
 		$status = array();
 		if (count($modulesToUninstall)) {
@@ -500,10 +503,67 @@ class CompojoomInstaller
 class CmandrillInstallerHelper {
 	public static function checkIfUpdating(){
 		jimport('joomla.plugin.plugin');
-		$plugin = JPluginHelper::getPlugin('system', 'plg_system_mandrill');
+		$update = 'new';
+		$plugin = JPluginHelper::getPlugin('system', 'mandrill');
 
-		var_dump(JPluginHelper::getPlugin('system'));
-		var_dump($plugin);
-		die();
+		// if the mandrill plugin is there let us have a look at the manifest cache
+		// to determine if it is from a version that needs updating
+		if(is_object($plugin)) {
+			$db = JFactory::getDbo();
+			$query = $db->getQuery(true);
+
+			$query->select('manifest_cache')
+				->from('#__extensions')
+				->where('type =' . $db->Quote('plugin'))
+				->where('folder='.$db->q('system'))
+				->where('element='.$db->q('mandrill'));
+
+			$db->setQuery($query,0,1);
+			$params = new JRegistry($db->loadObject()->manifest_cache);
+
+			if(version_compare($params->get('version'),'1.0.1', 'le')) {
+				$update = 'plugin';
+			}
+		}
+
+		return $update;
+	}
+
+	/**
+	 * This function handles the update to CMandrill from a
+	 * version of the extension where we only had a plugin
+	 * & the plugin was handling everything
+	 *
+	 * In the new CMandrill the settings are moved over to the component
+	 * that is why if we are updating from a version previous of 1.0.1 we will
+	 * copy the settings over to the component and will delete the settings for the plugin
+	 */
+	public static function updateFromOldPlugin() {
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->select('params')
+			->from('#__extensions')
+			->where('type =' . $db->q('plugin'))
+			->where('folder='.$db->q('system'))
+			->where('element='.$db->q('mandrill'));
+
+		$db->setQuery($query,0,1);
+		$params = new JRegistry($db->loadObject()->params);
+
+
+		//update the component params if we have anapi key
+		if($params->get('apiKey')) {
+			$query->clear();
+			$query->update('#__extensions')->set('params = '.$db->q(($params->toString())))
+				->where('type='.$db->q('component'))
+				->where('element='.$db->q('com_cmandrill'));
+
+			$db->setQuery($query);
+			if($db->execute()) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

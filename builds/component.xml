@@ -13,7 +13,7 @@
     <taskdef name="extfile" classname="phingext.listJPackageFilesTask"/>
     <taskdef name="gitversion" classname="phingext.GitVersionTask"/>
     <taskdef name="explode" classname="phingext.explodeTask"/>
-    <taskdef name="indexhtml" classname="phingext.indexHtmlTask" />
+    <taskdef name="indexhtml" classname="phingext.indexHtmlTask"/>
 
     <import file="plugin.xml" optional="true"/>
     <import file="module.xml" optional="true"/>
@@ -81,16 +81,26 @@
             </fileset>
         </copy>
 
-        <copy todir="${destination.dir}/components/com_${component.name}">
-            <fileset dir="${dirs.source}/components/com_${component.name}" includes="**/*.*"/>
-        </copy>
+        <if>
+            <isset property="frontend.exist"/>
+            <then>
+                <copy todir="${destination.dir}/components/com_${component.name}">
+                    <fileset dir="${dirs.source}/components/com_${component.name}" includes="**/*.*"/>
+                </copy>
+            </then>
+        </if>
 
 
-        <copy todir="${destination.dir}/language/">
-            <fileset dir="${dirs.source}/language/">
-                <include name="**/*.com_${component.name}.ini"/>
-            </fileset>
-        </copy>
+        <if>
+            <isset property="frontendLang.exist"/>
+            <then>
+                <copy todir="${destination.dir}/language/">
+                    <fileset dir="${dirs.source}/language/">
+                        <include name="**/*.com_${component.name}.ini"/>
+                    </fileset>
+                </copy>
+            </then>
+        </if>
 
         <if>
             <equals arg1="${media.exist}" arg2="1"/>
@@ -125,10 +135,7 @@
             </filterchain>
         </copy>
 
-        <extfile file="${destination.dir}/${component.name}.xml"
-                 sourceDir="${dirs.source}"
-                 component="com_${component.name}"
-                />
+
 
         <if>
             <isset property="plugins"/>
@@ -151,8 +158,13 @@
             </then>
         </if>
 
-        <echo message="Now add the index.html files!" />
-        <indexhtml dir="${destination.dir}" />
+        <echo message="Now add the index.html files!"/>
+        <indexhtml dir="${destination.dir}"/>
+
+        <extfile file="${destination.dir}/${component.name}.xml"
+                 sourceDir="${dirs.source}"
+                 component="com_${component.name}"
+                />
     </target>
 
     <target name="dev-release" description="Makes everything except the documentation"
