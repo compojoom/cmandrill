@@ -142,5 +142,5 @@ $days = abs(floor(strtotime('now') / (60 * 60 * 24)) - floor(strtotime($info->cr
 
 			</table>
 		</div>
-
+		<?php echo cmandrillHelperUtility::footer(); ?>
 	</div>

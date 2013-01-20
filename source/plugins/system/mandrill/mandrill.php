@@ -8,21 +8,17 @@
 // no direct access
 defined('_JEXEC') or die('Restricted access');
 
-jimport('joomla.plugin.plugin');
 
 class plgSystemMandrill extends JPlugin
 {
-
-	public function __construct(&$subject, $config)
-	{
-		parent::__construct($subject, $config);
-	}
-
-
 	public function onAfterInitialise()
 	{
+		$params = JComponentHelper::getParams('com_cmandrill');
+		$appl = JFactory::getApplication();
 
-		$key = $this->params->get('apiKey');
+		$this->loadLanguage('plg_system_mandrill.sys');
+
+		$key = $params->get('apiKey');
 
 		if (strlen($key)) {
 
@@ -32,7 +28,8 @@ class plgSystemMandrill extends JPlugin
 			JLoader::load('JMail');
 
 		} else {
-			return JError::raiseWarning(500, JText::_('PLG_SYSTEM_MANDRILL_NO_API_KEY_SPECIFIED'));
+			$appl->enqueueMessage(JText::sprintf('PLG_SYSTEM_MANDRILL_NO_API_KEY_SPECIFIED', JRoute::_('index.php?option=com_cmandrill')), 'warning');
+			return false;
 		}
 	}
 

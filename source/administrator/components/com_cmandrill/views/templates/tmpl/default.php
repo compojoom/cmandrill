@@ -93,6 +93,7 @@ $listDirn = $this->escape($this->state->get('list.direction'));
 			</table>
 
 
+			<?php echo cmandrillHelperUtility::footer(); ?>
 		</div>
 		<input type="hidden" name="task" value="" />
 		<input type="hidden" name="boxchecked" value="0" />

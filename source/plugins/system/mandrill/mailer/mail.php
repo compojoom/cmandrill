@@ -27,6 +27,8 @@ defined('JPATH_BASE') or die();
 jimport('phpmailer.phpmailer');
 jimport('joomla.mail.helper');
 
+JLoader::discover('cmandrillHelper', JPATH_ADMINISTRATOR.'/components/com_cmandrill/helpers/');
+
 /**
  * Email Class.  Provides a common interface to send email from the Joomla! Platform
  *
@@ -48,11 +50,6 @@ class JMail extends PHPMailer
 	 */
 	public function __construct()
 	{
-
-		$plugin = JPluginHelper::getPlugin('system', 'mandrill');
-		$this->params = new JRegistry($plugin->params);
-
-		$this->apiKey = $this->params->get('apiKey');
 
 		// phpmailer has an issue using the relative path for it's language files
 		$this->SetLanguage('joomla', JPATH_PLATFORM . '/phpmailer/language/');
@@ -498,29 +495,12 @@ class JMail extends PHPMailer
 
 	private function isDailyQuotaExeeded()
 	{
-		$url = $this->getMandrillUrl() . '/users/info.json';
 
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode(array('key' => $this->apiKey)));
-
-		if ($this->params->get('secure')) {
-			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, true);
-		}
-
-		$result = curl_exec($ch);
-		curl_close($ch);
-		$data = json_decode($result);
+		$data = cmandrillHelperMandrill::send('users','info');
 
 		$dailyQuota = $data->hourly_quota * 24;
 
 		$sentToday = $data->stats->today->sent;
-
 
 		if ((int)$dailyQuota <= (int)$sentToday) {
 
@@ -533,8 +513,10 @@ class JMail extends PHPMailer
 
 	private function mandrillSend()
 	{
-
+		$action = 'send';
+		$to = array();
 		$attachments = $this->GetAttachments();
+		$mAttachments = array();
 		if(count($attachments) > 0) {
 
 			foreach($attachments as $attachment) {
@@ -557,7 +539,6 @@ class JMail extends PHPMailer
 		}
 
 		$mandrill = new stdClass();
-		$mandrill->key = $this->apiKey;
 		$mandrill->message = array(
 			'subject' => $this->Subject,
 			'from_email' => $this->From,
@@ -572,13 +553,13 @@ class JMail extends PHPMailer
 		// let us set some tags
 		$input = JFactory::getApplication()->input;
 		if ($input->get('option')) {
-			$mandrill->message['tags'][] = $input->get('option');
+			$mandrill->message['tags'][] = 'component_' .$input->get('option');
 		}
 		if ($input->get('view')) {
-			$mandrill->message['tags'][] = $input->get('view');
+			$mandrill->message['tags'][] = 'view_' . $input->get('view');
 		}
 		if ($input->get('task')) {
-			$mandrill->message['tags'][] = $input->get('task');
+			$mandrill->message['tags'][] = 'task_' . $input->get('task');
 		}
 
 		if (count($this->ReplyTo) > 0) {
@@ -610,30 +591,40 @@ class JMail extends PHPMailer
 			);
 		}
 
+		// if we have a template, then use it!
+		$template = cmandrillHelperMandrill::getTemplate();
+
+		if($template) {
+			$mandrill->template_name = $template;
+
+
+			$html = $this->Body;
+			// if we have a template, we need to send the mail in HTML format
+			// so if joomla is sending it in text/plain, then we need to make some modifications to it
+			if ($this->ContentType == 'text/plain') {
+				$html = nl2br(htmlspecialchars($html));
+				// replace multiple spaces with single spaces
+				$html = preg_replace('/\s\s+/', ' ', $html);
+				// replace URLs with <a href...> elements
+				$html = preg_replace('/\s(\w+:\/\/)(\S+)/', ' <a href="\\1\\2" target="_blank">\\1\\2</a>', $html);
+			}
+
+			$mandrill->template_content = array(
+				array(
+					'name' => 'main_content',
+					'content' => $html
+				)
+			);
+			$action = 'send-template';
+		}
+
 		// if we have more than 1000 recipients, let us send this in chunks
 		$to = array_chunk($to, 1000);
 		$status = array();
 		foreach($to as $value) {
 			$mandrill->message['to'] = $value;
 
-			$url = $this->getMandrillUrl() . '/messages/send.json';
-
-			$ch = curl_init();
-			curl_setopt($ch, CURLOPT_URL, $url);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-			curl_setopt($ch, CURLOPT_POST, 1);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($mandrill));
-
-			if ($this->params->get('secure')) {
-				curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
-				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-				curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, true);
-			}
-
-			$data = json_decode(curl_exec($ch));
-
-			curl_close($ch);
+			$data = cmandrillHelperMandrill::send('messages', $action, $mandrill);
 
 			// check if we have have a correct response
 			if (is_array($data)) {
@@ -650,7 +641,7 @@ class JMail extends PHPMailer
 
 		// if we have rejected emails - try to send them with phpMailer
 		// not a perfect solution because we will return the result form phpMailer instead of the Mandrill
-		// but better to try to deliver agian than to fail to send the message
+		// but better to try to deliver again than to fail to send the message
 		if (isset($status['rejected']) && count($status['rejected'])) {
 			$this->writeToLog(JText::sprintf('PLG_MANDRILL_EMAIL_TO_REJECTED',implode(',', $status['rejected'])));
 			$this->ClearAddresses();
@@ -699,6 +690,7 @@ class JMail extends PHPMailer
 
 		return false;
 	}
+
 	/**
 	 *
 	 * @param $message
@@ -706,23 +698,6 @@ class JMail extends PHPMailer
 	private function writeToLog($message)
 	{
 		JLog::add($message, JLog::WARNING);
-	}
-
-	/**
-	 * @return string - the url to mailchimp api
-	 */
-	private function getMandrillUrl()
-	{
-
-		$scheme = 'http';
-
-		if ($this->params->get('secure')) {
-			$scheme = 'https';
-		}
-
-		$url = $scheme . '://mandrillapp.com/api/1.0';
-
-		return $url;
 	}
 
 }

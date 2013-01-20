@@ -448,6 +448,7 @@ class CompojoomInstaller
 	public function preflight($type, $parent)
 	{
 		$jversion = new JVersion();
+		$appl = JFactory::getApplication();
 
 		// Extract the version number from the manifest file
 		$this->release = $parent->get("manifest")->version;
@@ -456,8 +457,8 @@ class CompojoomInstaller
 		$this->minimum_joomla_release = $parent->get("manifest")->attributes()->version;
 
 		if (version_compare($jversion->getShortVersion(), $this->minimum_joomla_release, 'lt')) {
-			Jerror::raiseWarning(null, 'Cannot install ' . $this->extension . ' in a Joomla release prior to '
-				. $this->minimum_joomla_release);
+			$appl->enqueueMessage('Cannot install ' . $this->extension . ' in a Joomla release prior to '
+				. $this->minimum_joomla_release, 'warning');
 			return false;
 		}
 
@@ -467,7 +468,7 @@ class CompojoomInstaller
 			$rel = $oldRelease . ' to ' . $this->release;
 			if (!strstr($this->release, 'git_')) {
 				if (version_compare($this->release, $oldRelease, 'lt')) {
-					Jerror::raiseWarning(null, 'Incorrect version sequence. Cannot upgrade ' . $rel);
+					$appl->enqueueMessage('Incorrect version sequence. Cannot upgrade ' . $rel, 'warning');
 					return false;
 				}
 			}
@@ -535,7 +536,7 @@ class CmandrillInstallerHelper {
 	 * & the plugin was handling everything
 	 *
 	 * In the new CMandrill the settings are moved over to the component
-	 * that is why if we are updating from a version previous of 1.0.1 we will
+	 * that is why if we are updating from a version previous to 1.0.1 we will
 	 * copy the settings over to the component and will delete the settings for the plugin
 	 */
 	public static function updateFromOldPlugin() {
@@ -551,7 +552,7 @@ class CmandrillInstallerHelper {
 		$params = new JRegistry($db->loadObject()->params);
 
 
-		//update the component params if we have anapi key
+		//update the component params if we have an api key
 		if($params->get('apiKey')) {
 			$query->clear();
 			$query->update('#__extensions')->set('params = '.$db->q(($params->toString())))
@@ -560,6 +561,15 @@ class CmandrillInstallerHelper {
 
 			$db->setQuery($query);
 			if($db->execute()) {
+				// ok we've copied the plugin params. Now let us clear the plugin params
+				$query->clear();
+				$query->update('params')->from('#__extensions')->set('params = ' . $db->q(''))
+					->where('type =' . $db->q('plugin'))
+					->where('folder='.$db->q('system'))
+					->where('element='.$db->q('mandrill'));
+				$db->setQuery($query);
+				$db->execute();
+
 				return true;
 			}
 		}
