@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN"
+"http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd">
+<book>
+  <bookinfo>
+    <title>CMandrill extension for Joomla!™ User's Guide</title>
+
+    <author>
+      <firstname>Daniel</firstname>
+
+      <surname>Dimitrov</surname>
+
+      <affiliation>
+        <orgname>compojoom.com</orgname>
+      </affiliation>
+    </author>
+
+    <pubdate>27.04.2012</pubdate>
+
+    <legalnotice>
+      <para>Permission is granted to copy, distribute and/or modify this
+      document under the terms of the GNU Free Documentation License, Version
+      1.3 or any later version published by the Free Software Foundation; with
+      no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A
+      copy of the license is included in the appendix entitled "The GNU Free
+      Documentation License".</para>
+    </legalnotice>
+
+    <abstract>
+      <para>This book covers the use of the CMandrill extension &amp; plugin
+      for Joomla. It does not cover any other extension available on
+      compojoom.com .</para>
+    </abstract>
+  </bookinfo>
+
+  <article>
+    <para><revhistory>
+        <revision>
+          <revnumber>Revision 0.1</revnumber>
+
+          <date>28.04.2012</date>
+
+          <author>
+            <firstname>Daniel</firstname>
+
+            <surname>Dimitrov</surname>
+          </author>
+        </revision>
+
+        <revision>
+          <revnumber>Revision 0.2</revnumber>
+
+          <date>21.01.2013</date>
+
+          <author>
+            <firstname>Daniel</firstname>
+
+            <surname>Dimitrov</surname>
+          </author>
+        </revision>
+      </revhistory></para>
+  </article>
+
+  <chapter>
+    <title>Introduction</title>
+
+    <section>
+      <title>Introducing Mandrillapp.com</title>
+
+      <para>In April 2012 <ulink
+      url="https://mailchimp.com/?pid=compojoom&amp;source=website">Mailchimp</ulink>
+      introduced a new transactional email service called <ulink
+      url="http://mandrill.com">Mandrill</ulink>. Mandrill is using the same
+      optimized delivery engine that MailChimp uses for the delivery of bulk
+      newsletters – slightly modified for one-to-one email. The core features
+      of Mandrill are:</para>
+
+      <para><itemizedlist>
+          <listitem>
+            <para>Uses MailChimp's awesome email delivery engine</para>
+          </listitem>
+
+          <listitem>
+            <para>Tracks opens and clicks</para>
+          </listitem>
+
+          <listitem>
+            <para>Automatically adds Google Analytics tracking data to the
+            URLs in the mail</para>
+          </listitem>
+
+          <listitem>
+            <para>Has pretty, visual reports of the email results</para>
+          </listitem>
+
+          <listitem>
+            <para>Allows you to tag the emails and see your stats filtered by
+            tag</para>
+          </listitem>
+        </itemizedlist></para>
+    </section>
+
+    <section>
+      <title>Introducing CMandrill for Joomla</title>
+
+      <para>Since you normally need to be a programmy nerd to use the service
+      <ulink
+      url="https://mailchimp.com/?pid=compojoom&amp;source=website">MailChimp</ulink>
+      asked us to create an integration for Mandrill's API into Joomla. Back
+      in April 2012 we came up with a simple plugin, that allowed you to just
+      provide your API key and after that all e-mails* send by Joomla are
+      going to be sent trough the Mandrill API. Since then we've used the
+      plugin ourselves on compojoom.com and with each day we started to love
+      the Mandrill service even more. That's why we decided that a plugin is
+      great, but making a whole extension would allow us to even better
+      integrate with the Mandrill API and make Joomla's emails just
+      awesome!</para>
+
+      <para>With the CMandrill extension you'll be able to:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>Send emails through the Mandrill API optimised for
+          speed</para>
+        </listitem>
+
+        <listitem>
+          <para>Look at the most important stats (send, receive, bounce rates)
+          directly from your Joomla backend</para>
+        </listitem>
+
+        <listitem>
+          <para>Configure a global HTML template for emails</para>
+        </listitem>
+
+        <listitem>
+          <para>Create HTML templates for specific components and even further
+          define each view or task that should use that template</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>* All extensions that use the standard Joomla API for sending
+      mails will continue to function as normal and the mails will be send
+      trough Mandrill. If you are using extensions that have their own Mail
+      classes, then those extensions will continue to function as normal, but
+      they won't use the Mandrill API</para>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Installation and Updates</title>
+
+    <para>Installing the Mandrill plugin for Joomla is easy it is not in any
+    way different than installing any other Joomla!™ extension/module/plugin
+    on your site. You can read the complete instructions for installing
+    Joomla!™ extensions on the <ulink
+    url="http://help.joomla.org/content/view/1476/235/">official Joomla help
+    page</ulink> .Throughout this chapter we assume that you are familiar with
+    these instructions and we will not duplicate them.</para>
+
+    <section>
+      <title>Getting the installation packages</title>
+
+      <para>You can download the latest installation packages by visiting our
+      site at <ulink
+      url="https://compojoom.com">https://compojoom.com</ulink>. (you need to
+      be login) In the download menu you will see the CMandrill menu item.
+      Click on it. The latest releases are listed with the newest release
+      always on top. Click on the release number and then download the ZIP
+      package.</para>
+
+      <section>
+        <title>Compatibility</title>
+
+        <para>The CMandrill extension for Joomla is currently compatible with
+        Joomla 2.5 &amp; 3.0</para>
+      </section>
+    </section>
+
+    <section>
+      <title>Updating to the latest version</title>
+
+      <para>The plugin uses the standard update routine in Joomla. All you
+      need to do is to go to Extensions -&gt; Extension Manager -&gt; Update
+      in your Joomla backend. Then click on "Find Updates" if a new version of
+      the plugin is available you will be able to update by selecting it and
+      clicking on the "Update" button</para>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Using the CMandrill extension for Joomla</title>
+
+    <para>The zip package of CMandrill will install both the extension and the
+    plugin. After the installation you need to navigate to components -&gt;
+    CMandrill and then access the options of the extension. Once you provide
+    your Mandrill API key, you need to navigate to Extensions -&gt; Plugin
+    manager and activate the "System - Mandrill" plugin.</para>
+
+    <section>
+      <title>Options</title>
+
+      <para>To access the options screen navigate to Components -&gt;
+      CMandrill and then click on the Options tag. </para>
+
+      <para>In the basics tab you have the following parameters:</para>
+
+      <para><itemizedlist>
+          <listitem>
+            <para>API key - In the API key field provide your Mandrill API key
+            (on the day of writing that documentation the API key could be
+            found by clicking on the settings button (top right) at the
+            mandrillapp.com page (you need to be logged in to see it))</para>
+          </listitem>
+
+          <listitem>
+            <para>Use https - The use https option defines if the plugin
+            should communicate with Mandrill server through an SSL connection
+            or not. We recommend to set this option to yes if your hosting has
+            the necessary PHP SSL libraries for this.</para>
+          </listitem>
+        </itemizedlist>In the Permissions tab you can specify which user group
+      is allowed to access the backend of the extension.</para>
+    </section>
+
+    <section>
+      <title>Dashboard</title>
+
+      <para>CMandrill's dashboard is showing your most important email
+      delivery stats right in the backend of Joomla. On the dashboard you can
+      see your sent, delivered data for the last 7 days or all time stats. You
+      also have a list with the top 100 most clicked urls in your emails.
+      </para>
+    </section>
+
+    <section>
+      <title>Templates</title>
+
+      <para>In the templates view you'll be able to create a global HTML
+      template that is going to be used when sending emails through Mandrill.
+      Further more you can create templates just for specific extensions. For
+      example you can have a global template that is used by all extensions,
+      but for com_users you can have a customised template that gives newly
+      registered users a coupon code along with their registration. </para>
+
+      <note>
+        <para>The HTML templates should be created directly in Mandrill. In
+        CMandrill you just assign those templates to specific components,
+        views or tasks. </para>
+      </note>
+
+      <section>
+        <title>Creating a template</title>
+
+        <para>On the template view click the new button. You'll be presented
+        with a form that you need to fill out and save. </para>
+
+        <para>Fields:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>title - enter a title for this HTML template. The title is
+            only visible in the backend and is used to help you figure out
+            what the template is actually for. </para>
+          </listitem>
+
+          <listitem>
+            <para>Status - the status of the template can be either publish or
+            unpublished. Unpublished templates won't be used when sending
+            emails</para>
+          </listitem>
+
+          <listitem>
+            <para>Start publishing &amp; Finish Publishing - if you specify a
+            timeframe here the template will be only used when the timeframe
+            is met</para>
+          </listitem>
+
+          <listitem>
+            <para>Mandrill Template - from this drop down field select the
+            Mandrill template that this template is using.</para>
+          </listitem>
+
+          <listitem>
+            <para>Component - select the component that this template is for.
+            Use global if this template is meant to be used for the whole
+            website</para>
+          </listitem>
+
+          <listitem>
+            <para>View - if you specify a view, this template will be only
+            used if the email that we send is sent through the matching
+            component &amp; view</para>
+          </listitem>
+
+          <listitem>
+            <para>Task - the same as view. If you specify a task, we will try
+            to match the component that is used to send the mail, the view and
+            the task</para>
+          </listitem>
+        </itemizedlist>
+
+        <important>
+          <para>If you want to create a component wide template, then only
+          specify the component name and leave the view and task empty</para>
+        </important>
+
+        <note>
+          <para>Let us say that you want to set an HTML template only for new
+          registration mails. First of all you'll need to figure out which
+          component is sending the mails. Then you'll have to find out what
+          view &amp; task is used. CMigrator is helping you here as well. When
+          we send emails through the mandrill API we add few tags such as
+          component_name_of_component (ex. component_com_users), view such as
+          view_registration and task such as task_register. Just login into
+          mandrillapp.com and go to your Outbound-&gt; activity screen. There
+          you can see all the emails that we are sending together with the
+          tags. Just note the tags that you see there and use them when you
+          configure the form. (the name of the view and task are the values
+          after "view_" and "task_"</para>
+        </note>
+      </section>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>The Plugin</title>
+
+    <para>When you install the CMandrill extension we also install the "System
+    - Mandrill" plugin. This plugin is actually used to send the emails
+    through the Mandrill API, so you'll need to enable it once you've provided
+    your API key in the component's settings. </para>
+
+    <note>
+      <para>Once you enable the plugin, make sure that everything is working
+      by executing an action on your site that sends an email. The email that
+      you receive then should be coming from mandrill. (look at the sender's
+      name)</para>
+    </note>
+  </chapter>
+
+  <chapter>
+    <title>Good to know</title>
+
+    <section>
+      <title>Sending limits</title>
+
+      <para>Depending on your Mandrill account there are different sending
+      limits that apply for you. If you are a free user then this limit is
+      currently 12 000 emails per month. For more information on sending
+      limits please refer to <ulink
+      url="http://help.mandrill.com/customer/portal/articles/464936-mailchimp-bundled-pricing">Mandrill's
+      help pages</ulink>.</para>
+
+      <para>The current implementation of the plugin checks how many emails
+      you have send for the day and how big your sending limit is. If you have
+      reached your sending e-mail then the plugin will fall back to the
+      standard JMailer class and will send the mails according to the settings
+      that you have specified in your Global Configuration (Joomla's global
+      configuration. Accessible through Site -&gt; Global Configuration -&gt;
+      Server -&gt; Mail Settings)</para>
+    </section>
+
+    <section>
+      <title>CC emails</title>
+
+      <para>If a Joomla extension tries to send an email that has the CC
+      option set, then the plugin will fall back to the standard JMailer class
+      and won't use the Mandrill API.</para>
+    </section>
+
+    <section>
+      <title>What happens with rejected mails?</title>
+
+      <para>In some situations the Mandrill API won't send the mail and will
+      return a rejected status for it. In this case the plugin will try to
+      send the mail to the recipient again, but this time using the standard
+      JMailer class.</para>
+    </section>
+
+    <section>
+      <title>Logging</title>
+
+      <para>The plugin uses the standard Joomla JLog class to log errors and
+      warnings. The logs are saved in the folder configured in your Joomla's
+      Global Configuration. The logs are split by Month. You can expect them
+      to identify situations in which the plugin was not able to send the
+      email using Mandrill's API and has fallen back to the standard JMailer
+      class.</para>
+
+      <section>
+        <title>Events logged</title>
+
+        <para>The plugin logs following events:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Use of CC option for sending emails</para>
+          </listitem>
+
+          <listitem>
+            <para>Daily sending quota exceeded</para>
+          </listitem>
+
+          <listitem>
+            <para>Queued messages</para>
+          </listitem>
+
+          <listitem>
+            <para>Rejected messages</para>
+          </listitem>
+
+          <listitem>
+            <para>Unsupported attachments</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+    </section>
+
+    <section>
+      <title>Tags</title>
+
+      <para>For each Mail we try to add the following tags:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>option - identifies the Joomla component sending the
+          email</para>
+        </listitem>
+
+        <listitem>
+          <para>view - identifies the view of the component sending the
+          mail</para>
+        </listitem>
+
+        <listitem>
+          <para>task - identifies the task that is executed by the component
+          sending the mail</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>Each of this tags is added only if we are able to identify
+      it.</para>
+    </section>
+
+    <section>
+      <title>Attachments</title>
+
+      <para>Currently the Mandrill API supports only attachments with the mime
+      type image/*, text/* and application/pdf. If your Joomla site is sending
+      emails that contain other attachments, then the plugin will recognise
+      this and will fall back to the standard JMailer class.</para>
+    </section>
+
+    <section>
+      <title>Email HTML templates</title>
+
+      <para>You can have only 1 global template, but you can have as many
+      component's HTML templates. The component HTML templates can be used for
+      the whole component (this is when you don't specify a view and task) or
+      they can be used only on a specific view &amp; task.</para>
+
+      <section>
+        <title>How do we determine which template to use?</title>
+
+        <para>When we are sending the mail we are trying to find out if you
+        have a template that matches all criteria - component, view &amp;
+        task. If we find such a template, we'll use it. If we don't find such
+        a template, then we will look just for a template for the current
+        component. If we find one, we will use this template to send the mail.
+        If we don't find one, then we'll search for a global template. If you
+        have one we'll use it. If you don't we'll send the mail without any
+        template (normally as plain-text)</para>
+      </section>
+
+      <section>
+        <title>What modifications are made to the content of HTML
+        mails</title>
+
+        <para>If we determine that we need to use an HTML template, then we
+        need to slightly modify the content of the mail. Most mail in Joomla
+        is sent as plain-text. But if you are using an HTML template you want
+        this plain text to be properly formatted. So that is why when we need
+        to send an HTML template and we find out that the text is in
+        plain-text we parse it and add &lt;br /&gt; where necessary &amp; we
+        also change HTML links to &lt;a href="html link"&gt;html
+        link&lt;/a&gt; . Those small modifications make sure that the mail
+        will look fine in the user's inbox.</para>
+      </section>
+    </section>
+  </chapter>
+
+  <chapter>
+    <title>Support</title>
+
+    <para>The CMandrill extension for Joomla is released free of charge.
+    Community support is available in our Forum in the CMandrill
+    section.</para>
+  </chapter>
+</book>

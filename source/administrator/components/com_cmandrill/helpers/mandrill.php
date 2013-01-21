@@ -105,8 +105,8 @@ class cmandrillHelperMandrill {
 			->where($db->qn('view').'='.$db->q($view))
 			->where($db->qn('task').'='.$db->q($task))
 			->where('('.$db->qn('publish_up').' = '.$nullDate.' OR '.$db->qn('publish_up').' <= '.$nowDate.')')
-			->where('('.$db->qn('publish_down').' = '.$nullDate.' OR '.$db->qn('publish_down').' >= '.$nowDate.')');
-
+			->where('('.$db->qn('publish_down').' = '.$nullDate.' OR '.$db->qn('publish_down').' >= '.$nowDate.')')
+			->where($db->qn('state').'='.$db->q(1));
 
 		$db->setQuery($query,0,1);
 		$template = $db->loadObject();
@@ -118,7 +118,8 @@ class cmandrillHelperMandrill {
 				->where($db->qn('view').'='.$db->q(''))
 				->where($db->qn('task').'='.$db->q(''))
 				->where('('.$db->qn('publish_up').' = '.$nullDate.' OR '.$db->qn('publish_up').' <= '.$nowDate.')')
-				->where('('.$db->qn('publish_down').' = '.$nullDate.' OR '.$db->qn('publish_down').' >= '.$nowDate.')');
+				->where('('.$db->qn('publish_down').' = '.$nullDate.' OR '.$db->qn('publish_down').' >= '.$nowDate.')')
+				->where($db->qn('state').'='.$db->q(1));
 
 			$db->setQuery($query,0,1);
 
@@ -129,7 +130,8 @@ class cmandrillHelperMandrill {
 				$query->clear('where');
 				$query->where($db->qn('component').'='.$db->q('global'))
 					->where('('.$db->qn('publish_up').' = '.$nullDate.' OR '.$db->qn('publish_up').' <= '.$nowDate.')')
-					->where('('.$db->qn('publish_down').' = '.$nullDate.' OR '.$db->qn('publish_down').' >= '.$nowDate.')');
+					->where('('.$db->qn('publish_down').' = '.$nullDate.' OR '.$db->qn('publish_down').' >= '.$nowDate.')')
+					->where($db->qn('state').'='.$db->q(1));
 
 				$query->setQuery($query,0,1);
 				$template = $db->loadObject();

@@ -49,7 +49,7 @@ $days = abs(floor(strtotime('now') / (60 * 60 * 24)) - floor(strtotime($info->cr
 								<td><?php echo $sent7; ?></td>
 							</tr>
 							<tr>
-								<td><b><?php echo JText::_('COM_MANDRILL_DELIVERED'); ?></b></td>
+								<td><b><?php echo JText::_('COM_MANDRILL_DELIVERABILITY'); ?></b></td>
 								<td><?php echo round(($delivered7 / $sent7) * 100, 1); ?>%</td>
 							</tr>
 							</tbody>
