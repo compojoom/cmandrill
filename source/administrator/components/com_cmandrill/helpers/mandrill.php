@@ -14,11 +14,12 @@ class cmandrillHelperMandrill {
 	/**
 	 * @param $category - api call category (users, messages, tags etc..)
 	 * @param $action
-	 * @param $data - the data for the request
+	 * @param \stdClass $data - the data for the request
+	 * @param bool $cache - defines if we need to cache the request or not
 	 * @return mixed
 	 */
-	public static function send($category, $action, stdClass $data = null) {
-
+	public static function send($category, $action, stdClass $data = null, $cache = true) {
+		$response = false;
 		$params = JComponentHelper::getParams('com_cmandrill');
 
 		$url = self::getUrl() . '/'.$category.'/'.$action.'.json';
@@ -30,14 +31,18 @@ class cmandrillHelperMandrill {
 		$data->key = $params->get('apiKey');
 		$data = json_encode($data);
 
-		$id = md5($category.'/'.$action.'/'.$data);
+		// cache only if not a message
+		if($cache) {
+			// enable caching
+			$cacheObj = JFactory::getCache('com_cmandrill', 'output');
+			$cacheObj->setCaching(true);
+			$id = md5($category.'/'.$action.'/'.$data);
+			$response = $cacheObj->get($id);
+		}
 
-		$cache = JFactory::getCache('com_cmandrill', 'output');
-		$cache->setCaching(true);
+		// so have we already cached the response?
+		if(!$response) {
 
-		$response = $cache->get($id);
-		// always send the data if the category is messages
-		if(!$response || $category != 'messages') {
 			$ch = curl_init();
 			curl_setopt($ch, CURLOPT_URL, $url);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -52,7 +57,12 @@ class cmandrillHelperMandrill {
 			}
 
 			$response = curl_exec($ch);
-			$cache->store($response, $id);
+
+
+			if($cache) {
+				$cacheObj->store($response, $id);
+			}
+
 			curl_close($ch);
 		}
 
@@ -84,10 +94,19 @@ class cmandrillHelperMandrill {
 		$task = $input->getCmd('task');
 		$component = $input->getCmd('option');
 
+
+		// Filter by start and end dates.
+		$nullDate	= $db->q($db->getNullDate());
+		$nowDate	= $db->q(JFactory::getDate()->toSql());
+
+
 		$query->select($db->qn('template'))->from($db->qn('#__cmandrill_templates'))
 			->where($db->qn('component').'=' . $db->q($input->getCmd('option')))
 			->where($db->qn('view').'='.$db->q($view))
-			->where($db->qn('task').'='.$db->q($task));
+			->where($db->qn('task').'='.$db->q($task))
+			->where('('.$db->qn('publish_up').' = '.$nullDate.' OR '.$db->qn('publish_up').' <= '.$nowDate.')')
+			->where('('.$db->qn('publish_down').' = '.$nullDate.' OR '.$db->qn('publish_down').' >= '.$nowDate.')');
+
 
 		$db->setQuery($query,0,1);
 		$template = $db->loadObject();
@@ -95,9 +114,12 @@ class cmandrillHelperMandrill {
 		if(!$template) {
 			// try to find a template only for this component
 			$query->clear('where');
-			$query->where($db->qn('component').'='.$db->q($component));
-			$query->where($db->qn('view').'='.$db->q(''));
-			$query->where($db->qn('task').'='.$db->q(''));
+			$query->where($db->qn('component').'='.$db->q($component))
+				->where($db->qn('view').'='.$db->q(''))
+				->where($db->qn('task').'='.$db->q(''))
+				->where('('.$db->qn('publish_up').' = '.$nullDate.' OR '.$db->qn('publish_up').' <= '.$nowDate.')')
+				->where('('.$db->qn('publish_down').' = '.$nullDate.' OR '.$db->qn('publish_down').' >= '.$nowDate.')');
+
 			$db->setQuery($query,0,1);
 
 			$template = $db->loadObject();
@@ -105,7 +127,9 @@ class cmandrillHelperMandrill {
 			if(!$template) {
 				// find a global template?
 				$query->clear('where');
-				$query->where($db->qn('component').'='.$db->q('global'));
+				$query->where($db->qn('component').'='.$db->q('global'))
+					->where('('.$db->qn('publish_up').' = '.$nullDate.' OR '.$db->qn('publish_up').' <= '.$nowDate.')')
+					->where('('.$db->qn('publish_down').' = '.$nullDate.' OR '.$db->qn('publish_down').' >= '.$nowDate.')');
 
 				$query->setQuery($query,0,1);
 				$template = $db->loadObject();

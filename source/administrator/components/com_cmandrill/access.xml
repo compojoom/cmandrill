@@ -1,4 +1,4 @@
-<access component="com_mandrill">
+<access component="com_cmandrill">
     <section name="component">
         <action name="core.admin" title="JACTION_ADMIN" description="JACTION_ADMIN_COMPONENT_DESC" />
         <action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC" />

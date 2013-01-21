@@ -9,6 +9,7 @@
  
 defined('_JEXEC') or die('Restricted access');
 
+jimport('joomla.application.component.modellist');
 
 class cmandrillModelTemplates extends JModelList
 {

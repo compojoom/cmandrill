@@ -624,7 +624,7 @@ class JMail extends PHPMailer
 		foreach($to as $value) {
 			$mandrill->message['to'] = $value;
 
-			$data = cmandrillHelperMandrill::send('messages', $action, $mandrill);
+			$data = cmandrillHelperMandrill::send('messages', $action, $mandrill, false);
 
 			// check if we have have a correct response
 			if (is_array($data)) {

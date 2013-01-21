@@ -26,9 +26,6 @@ class cmandrillViewDashboard extends JViewLegacy {
 			$tpl = 'config';
 		}
 
-
-
-
 		$this->sidebar = $this->addToolbar();
 
 		parent::display($tpl);
@@ -43,9 +40,13 @@ class cmandrillViewDashboard extends JViewLegacy {
 			$view = 'dashboard';
 		}
 
-		JHtmlSidebar::addEntry(JText::_('COM_CMANDRILL_DASHBOARD'), 'index.php?option=com_cmandrill', $view == 'dashboard');
-		JHtmlSidebar::addEntry(JText::_('COM_CMANDRILL_TEMPLATES'), 'index.php?option=com_cmandrill&view=templates', $view == 'templates');
+		if(JVERSION > 2.5) {
+			JHtmlSidebar::addEntry(JText::_('COM_CMANDRILL_DASHBOARD'), 'index.php?option=com_cmandrill', $view == 'dashboard');
+			JHtmlSidebar::addEntry(JText::_('COM_CMANDRILL_TEMPLATES'), 'index.php?option=com_cmandrill&view=templates', $view == 'templates');
 
-		return JHtmlSidebar::render();
+			return JHtmlSidebar::render();
+		}
+
+		return false;
 	}
 }

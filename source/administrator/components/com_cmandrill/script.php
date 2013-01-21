@@ -27,7 +27,8 @@ class com_cmandrillInstallerScript extends CompojoomInstaller
 
 		),
 		'plugins' => array(
-			'plg_system_mandrill' => 1
+			//the plugin should be deactivated when installed because it shows a warning. The user needs to manually activate it
+			'plg_system_mandrill' => 0
 		)
 	);
 
@@ -46,16 +47,7 @@ class com_cmandrillInstallerScript extends CompojoomInstaller
 		$this->status->plugins = $this->uninstallPlugins($this->installationQueue['plugins']);
 		$this->status->modules = $this->uninstallModules($this->installationQueue['modules']);
 
-		$this->droppedTables = false;
-
-		if (hotspotsInstallerDatabase::isCompleteUninstall()) {
-			hotspotsInstallerDatabase::dropTables();
-			$this->droppedTables = true;
-		}
-
 		echo $this->displayInfoUninstallation();
-
-
 	}
 
 	/**
@@ -110,12 +102,7 @@ class com_cmandrillInstallerScript extends CompojoomInstaller
 
 	public function displayInfoUninstallation()
 	{
-		$html[] = '<div class="header">CMandrill is now removed from your system</div>';
-		if ($this->droppedTables) {
-			$html[] = '<p>The option uninstall complete mode was set to true. Database tables were removed</p>';
-		} else {
-			$html[] = '<p>The option uninstall complete mode was set to false. The database tables were not removed.</p>';
-		}
+		$html[] = '<h2>'.  JText::_('COM_MANDRILL_UNINSTALL_SUCCESSFULL') . '</h2>';
 
 		$html[] = $this->renderPluginInfoUninstall($this->status->plugins);
 		$html[] = $this->renderModuleInfoUninstall($this->status->modules);
@@ -522,7 +509,7 @@ class CmandrillInstallerHelper {
 			$db->setQuery($query,0,1);
 			$params = new JRegistry($db->loadObject()->manifest_cache);
 
-			if(version_compare($params->get('version'),'1.0.1', 'le')) {
+			if(version_compare($params->get('version'),'1.0.2', 'le')) {
 				$update = 'plugin';
 			}
 		}
@@ -551,7 +538,6 @@ class CmandrillInstallerHelper {
 		$db->setQuery($query,0,1);
 		$params = new JRegistry($db->loadObject()->params);
 
-
 		//update the component params if we have an api key
 		if($params->get('apiKey')) {
 			$query->clear();
@@ -563,7 +549,7 @@ class CmandrillInstallerHelper {
 			if($db->execute()) {
 				// ok we've copied the plugin params. Now let us clear the plugin params
 				$query->clear();
-				$query->update('params')->from('#__extensions')->set('params = ' . $db->q(''))
+				$query->update('#__extensions')->set('params = ' . $db->q(''))
 					->where('type =' . $db->q('plugin'))
 					->where('folder='.$db->q('system'))
 					->where('element='.$db->q('mandrill'));

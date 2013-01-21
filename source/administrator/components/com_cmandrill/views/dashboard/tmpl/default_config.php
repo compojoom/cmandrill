@@ -11,23 +11,24 @@ defined('_JEXEC') or die('Restricted access');
 
 JHtml::stylesheet('media/com_cmandrill/css/dashboard.css');
 ?>
+<div class="compojoom-bootstrap">
+	<div id="j-main-container" class="span12 row-fluid">
+		<div class="span12">
+			<div class="span2" style="height: 256px; padding-top: 70px;">
+				<h1 style="font-weight: bold; color:#ff0000; text-align: center">Don't panic</h1>
+				<?php echo JText::sprintf('COM_MANDRILL_GET_API_KEY', 'http://mandrillapp.com'); ?>
+				<br/>
+				<?php echo JText::sprintf('COM_MANDRILL_READ_THE_DOCS', 'https://compojoom.com/support/documentation/mandrill'); ?>
+			</div>
+			<div class="android offset2">
 
-<div id="j-main-container" class="span12">
-	<div class="span12">
-		<div class="span2" style="height: 256px; padding-top: 70px;">
-			<h1 style="font-weight: bold; color:#ff0000; text-align: center">Don't panic</h1>
-			<?php echo JText::sprintf('COM_MANDRILL_GET_API_KEY', 'http://mandrillapp.com'); ?>
-			<br />
-			<?php echo JText::_('COM_MANDRILL_READ_THE_DOCS'); ?>
-		</div>
-		<div class="android offset2">
+			</div>
 
+			<?php echo cmandrillHelperUtility::footer(); ?>
+			<div class="small">
+				Robot image was taken from <a href="http://openclipart.org/detail/20510/-by--20510" target="_blank">openclipart.org</a>.
+			</div>
 		</div>
 
-		<?php echo cmandrillHelperUtility::footer(); ?>
-		<div class="small">
-			Robot image was taken from <a href="http://openclipart.org/detail/20510/-by--20510" target="_blank">openclipart.org</a>.
-		</div>
 	</div>
-
 </div>

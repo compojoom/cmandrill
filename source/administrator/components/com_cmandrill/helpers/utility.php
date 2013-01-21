@@ -12,6 +12,9 @@ defined('_JEXEC') or die('Restricted access');
 class cmandrillHelperUtility
 {
 
+	/**
+	 * @return string
+	 */
 	public static function footer()
 	{
 		$output = '<div class="footer small">
@@ -37,7 +40,7 @@ class cmandrillHelperUtility
 			$result = cmandrillHelperMandrill::send('users', 'ping');
 			if ($result !== 'PONG!') {
 				if ($result->status === 'error') {
-					//unfortunatly we need to throw an exception
+					//unfortunately we need to throw an exception
 					throw new Exception('Invalid API key provided for the mandrill Service');
 				}
 			}
@@ -46,6 +49,16 @@ class cmandrillHelperUtility
 			if (!JPluginHelper::isEnabled('system', 'mandrill')) {
 				$appl->enqueueMessage(JText::sprintf('COM_CMANDRILL_PLG_MANDRILL_NOT_ENABLED', JRoute::_('index.php?option=com_plugins&view=plugins&filter_folder=system&filter_search=mandrill')), 'warning');
 			}
+		}
+	}
+
+	/**
+	 * include the bootstrap css
+	 * @return void
+	 */
+	public static function bootstrap() {
+		if(JVERSION < 3.0) {
+			JHTML::_('stylesheet', 'media/com_cmc/css/bootstrap.css');
 		}
 	}
 

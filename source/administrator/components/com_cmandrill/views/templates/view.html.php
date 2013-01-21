@@ -45,10 +45,13 @@ class cmandrillViewTemplates extends JViewLegacy
 
 		JToolbarHelper::deleteList('', 'templates.delete', 'JTOOLBAR_DELETE');
 
+		if(JVERSION > 2.5) {
+			JHtmlSidebar::addEntry(JText::_('COM_CMANDRILL_DASHBOARD'), 'index.php?option=com_cmandrill', $view == 'dashboard');
+			JHtmlSidebar::addEntry(JText::_('COM_CMANDRILL_TEMPLATES'), 'index.php?option=com_cmandrill&view=templates', $view == 'templates');
 
-		JHtmlSidebar::addEntry(JText::_('COM_CMANDRILL_DASHBOARD'), 'index.php?option=com_cmandrill', $view == 'dashboard');
-		JHtmlSidebar::addEntry(JText::_('COM_CMANDRILL_TEMPLATES'), 'index.php?option=com_cmandrill&view=templates', $view == 'templates');
+			return JHtmlSidebar::render();
+		}
 
-		return JHtmlSidebar::render();
+		return false;
 	}
 }

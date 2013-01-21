@@ -32,6 +32,8 @@ if($input->getCmd('view','') == 'liveupdate') {
 	return;
 }
 
+// on 2.5 we need the bootstrap css so let's add it here
+cmandrillHelperUtility::bootstrap();
 
 $controller = JControllerLegacy::getInstance('Cmandrill');
 $controller->execute($input->getCmd('task'));

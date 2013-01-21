@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension version="2.5" type="plugin" group="system" method="upgrade">
 	<name>plg_system_mandrill</name>
-	<author>Daniel Dimitrov</author>
-	<creationDate>2013-01-14</creationDate>
+	<author>Daniel Dimitrov / compojoom.com</author>
+	<creationDate>@@DATE@@</creationDate>
 	<copyright>Copyright (C) 2008 - 2012 Compojoom.com . All rights reserved.</copyright>
 	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
 	<authorEmail>daniel@compojoom.com</authorEmail>
 	<authorUrl>https://compojoom.com</authorUrl>
-	<version>git_33c9b4d</version>
+	<version>@@VERSION@@</version>
 	<description>PLG_SYSTEM_MANDRILL_DESC</description>
 	<files>
-        <file>index.html</file>
-<folder>mailer</folder>
-<file plugin="mandrill">mandrill.php</file>
+		##PACKAGEFILESPLUGIN##
 	</files>
 	<languages folder="administrator/language">
-        <language tag="en-GB">en-GB/en-GB.plg_system_mandrill.sys.ini</language>
+		##ADMINLANGUAGEFILES##
 	</languages>
 
 </extension>

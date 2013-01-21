@@ -3,7 +3,7 @@
 
 	<fieldset name="basic">
 		<field name="apiKey" type="text" default="" size="50" label="COM_CMANDRILL_MANDRILL_API_KEY"
-			   description="COM_CMANDRILL_MANDRILL_API_KEY_DESC"/>
+			   description="COM_CMANDRILL_MANDRILL_API_KEY_DESC" required="true"/>
 		<field name="secure" type="radio" default="0" label="COM_CMANDRILL_MANDRILL_HTTPS"
 			   description="COM_CMANDRILL_MANDRILL_USE_HTTPS_DESC">
 			<option value="0">JNO</option>
@@ -18,7 +18,7 @@
 			>
 
 		<field name="rules" type="rules"
-			   component="com_hotspots"
+			   component="com_cmandrill"
 			   filter="rules"
 			   validate="rules"
 			   label="JCONFIG_PERMISSIONS_LABEL"
