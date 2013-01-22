@@ -30,9 +30,9 @@ $listDirn = $this->escape($this->state->get('list.direction'));
 						<label for="filter_search"
 							   class="element-invisible"><?php echo JText::_('COM_CMANDRILL_SEARCH_IN_TITLE');?></label>
 						<input type="text" name="filter_search" id="filter_search"
-							   placeholder="<?php echo JText::_('COM_MANDRILL_SEARCH_IN_TITLE'); ?>"
+							   placeholder="<?php echo JText::_('COM_CMANDRILL_SEARCH_IN_TITLE'); ?>"
 							   value="<?php echo $this->escape($this->state->get('filter.search')); ?>"
-							   title="<?php echo JText::_('COM_WEBLINKS_SEARCH_IN_TITLE'); ?>"/>
+							   title="<?php echo JText::_('COM_CMANDRILL_SEARCH_IN_TITLE'); ?>"/>
 					</div>
 					<div class="btn-group pull-left">
 						<button class="btn hasTooltip" type="submit"
@@ -56,12 +56,12 @@ $listDirn = $this->escape($this->state->get('list.direction'));
 						<th>#</th>
 						<th><?php echo JHtml::_('grid.sort', 'JGLOBAL_TITLE', 'a.title', $listDirn, $listOrder); ?></th>
 						<th><?php echo JHtml::_('grid.sort', 'COM_CMANDRILL_STATE', 'a.state', $listDirn, $listOrder); ?></th>
-						<th><?php echo JHtml::_('grid.sort', 'COM_MANDRILL_PUBLISH_UP', 'a.publish_up', $listDirn, $listOrder); ?></th>
-						<th><?php echo JHtml::_('grid.sort', 'COM_MANDRILL_PUBLISH_DOWN', 'a.publish_down', $listDirn, $listOrder); ?></th>
-						<th><?php echo JHtml::_('grid.sort', 'COM_MANDRILL_TEMPLATE', 'a.template', $listDirn, $listOrder); ?></th>
-						<th><?php echo JHtml::_('grid.sort', 'COM_MANDRILL_COMPONENT', 'a.component', $listDirn, $listOrder); ?></th>
-						<th><?php echo JHtml::_('grid.sort', 'COM_MANDRILL_VIEW', 'a.view', $listDirn, $listOrder); ?></th>
-						<th><?php echo JHtml::_('grid.sort', 'COM_MANDRILL_TASK', 'a.task', $listDirn, $listOrder); ?></th>
+						<th><?php echo JHtml::_('grid.sort', 'COM_CMANDRILL_PUBLISH_UP', 'a.publish_up', $listDirn, $listOrder); ?></th>
+						<th><?php echo JHtml::_('grid.sort', 'COM_CMANDRILL_PUBLISH_DOWN', 'a.publish_down', $listDirn, $listOrder); ?></th>
+						<th><?php echo JHtml::_('grid.sort', 'COM_CMANDRILL_TEMPLATE', 'a.template', $listDirn, $listOrder); ?></th>
+						<th><?php echo JHtml::_('grid.sort', 'COM_CMANDRILL_COMPONENT', 'a.component', $listDirn, $listOrder); ?></th>
+						<th><?php echo JHtml::_('grid.sort', 'COM_CMANDRILL_VIEW', 'a.view', $listDirn, $listOrder); ?></th>
+						<th><?php echo JHtml::_('grid.sort', 'COM_CMANDRILL_TASK', 'a.task', $listDirn, $listOrder); ?></th>
 					</tr>
 					</thead>
 					<tbody>
@@ -89,7 +89,7 @@ $listDirn = $this->escape($this->state->get('list.direction'));
 					<?php else : ?>
 						<tr>
 							<td colspan="9">
-								<?php echo JText::_('COM_MANDRILL_YOU_HAVE_NO_TEMPLATES'); ?>
+								<?php echo JText::_('COM_CMANDRILL_YOU_HAVE_NO_TEMPLATES'); ?>
 							</td>
 						</tr>
 					<?php endif; ?>
