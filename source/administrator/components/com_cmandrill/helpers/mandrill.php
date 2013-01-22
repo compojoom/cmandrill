@@ -133,7 +133,7 @@ class cmandrillHelperMandrill {
 					->where('('.$db->qn('publish_down').' = '.$nullDate.' OR '.$db->qn('publish_down').' >= '.$nowDate.')')
 					->where($db->qn('state').'='.$db->q(1));
 
-				$query->setQuery($query,0,1);
+				$db->setQuery($query,0,1);
 				$template = $db->loadObject();
 
 				if(!$template) {
