@@ -65,19 +65,45 @@
     <title>Introduction</title>
 
     <section>
+      <title>Transactional emails</title>
+
+      <para>Transactional emails are emails sent to an individual based on
+      some action. It could be:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>an action they took directly</para>
+        </listitem>
+
+        <listitem>
+          <para>an action they were the target of</para>
+        </listitem>
+
+        <listitem>
+          <para>an inaction on their part (reminder to login into a
+          website)</para>
+        </listitem>
+      </itemizedlist>
+
+      <para>For example if a user registers on a website, most of the time he
+      will get a confirmation or welcome mail. This is a transactional email.
+      </para>
+    </section>
+
+    <section>
       <title>Introducing Mandrillapp.com</title>
 
       <para>In April 2012 <ulink
       url="https://mailchimp.com/?pid=compojoom&amp;source=website">Mailchimp</ulink>
       introduced a new transactional email service called <ulink
       url="http://mandrill.com">Mandrill</ulink>. Mandrill is using the same
-      optimized delivery engine that MailChimp uses for the delivery of bulk
+      optimized delivery engine that Mailchimp uses for the delivery of bulk
       newsletters – slightly modified for one-to-one email. The core features
       of Mandrill are:</para>
 
       <para><itemizedlist>
           <listitem>
-            <para>Uses MailChimp's awesome email delivery engine</para>
+            <para>Uses Mailchimp's awesome email delivery engine</para>
           </listitem>
 
           <listitem>
@@ -98,6 +124,25 @@
             tag</para>
           </listitem>
         </itemizedlist></para>
+
+      <para>Since the above description might not help you much, let us try
+      with an example.</para>
+
+      <para>Let us imagine that after registering on website X, we don't get
+      the confirmation mail. What do we do? We contact the website owner and
+      say - sorry, but we didn't receive the email. Let us imagine that we are
+      the owner of website X - what do we do when a customer is telling us
+      that he didn't receive the mail? We scratch our head and we say - look
+      at your spam folder. But is the email really in the spam folder, was it
+      actually sent? Is it still in the process of delivery or did it
+      magically disappear from the face of the internet? In the past we did
+      not have a simple way to know that, but now that has changed thanks to
+      Mandrill. You can look at the emails being sent from your Joomla
+      website, you can look at open/click rates and you can always know if a
+      mail was delivered or it bounced back. This is what the Mandrill service
+      is all about - giving you the peace of mind that your customers are
+      receiving your emails &amp; the bonus of knowing if they actually open
+      them and engage with the content.</para>
     </section>
 
     <section>
@@ -201,7 +246,7 @@
       <title>Options</title>
 
       <para>To access the options screen navigate to Components -&gt;
-      CMandrill and then click on the Options tag. </para>
+      CMandrill and then click on the Options tag.</para>
 
       <para>In the basics tab you have the following parameters:</para>
 
@@ -229,8 +274,8 @@
       <para>CMandrill's dashboard is showing your most important email
       delivery stats right in the backend of Joomla. On the dashboard you can
       see your sent, delivered data for the last 7 days or all time stats. You
-      also have a list with the top 100 most clicked urls in your emails.
-      </para>
+      also have a list with the top 100 most clicked urls in your
+      emails.</para>
     </section>
 
     <section>
@@ -241,19 +286,19 @@
       Further more you can create templates just for specific extensions. For
       example you can have a global template that is used by all extensions,
       but for com_users you can have a customised template that gives newly
-      registered users a coupon code along with their registration. </para>
+      registered users a coupon code along with their registration.</para>
 
       <note>
         <para>The HTML templates should be created directly in Mandrill. In
         CMandrill you just assign those templates to specific components,
-        views or tasks. </para>
+        views or tasks.</para>
       </note>
 
       <section>
         <title>Creating a template</title>
 
         <para>On the template view click the new button. You'll be presented
-        with a form that you need to fill out and save. </para>
+        with a form that you need to fill out and save.</para>
 
         <para>Fields:</para>
 
@@ -261,7 +306,7 @@
           <listitem>
             <para>title - enter a title for this HTML template. The title is
             only visible in the backend and is used to help you figure out
-            what the template is actually for. </para>
+            what the template is actually for.</para>
           </listitem>
 
           <listitem>
@@ -329,7 +374,7 @@
     <para>When you install the CMandrill extension we also install the "System
     - Mandrill" plugin. This plugin is actually used to send the emails
     through the Mandrill API, so you'll need to enable it once you've provided
-    your API key in the component's settings. </para>
+    your API key in the component's settings.</para>
 
     <note>
       <para>Once you enable the plugin, make sure that everything is working
@@ -486,6 +531,20 @@
         also change HTML links to &lt;a href="html link"&gt;html
         link&lt;/a&gt; . Those small modifications make sure that the mail
         will look fine in the user's inbox.</para>
+      </section>
+
+      <section>
+        <title>Where do we put the content of the Joomla email in the HTML
+        template?</title>
+
+        <para>Your HTML template should contain the following code:</para>
+
+        <programlisting>&lt;div mc:edit="main_content"&gt;
+
+&lt;/div&gt;</programlisting>
+
+        <para>This is where the content of the Joomla mail is going to be
+        inserted. </para>
       </section>
     </section>
   </chapter>
