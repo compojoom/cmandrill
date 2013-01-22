@@ -606,7 +606,7 @@ class JMail extends PHPMailer
 				// replace multiple spaces with single spaces
 				$html = preg_replace('/\s\s+/', ' ', $html);
 				// replace URLs with <a href...> elements
-				$html = preg_replace('/\s(\w+:\/\/)(\S+)/', ' <a href="\\1\\2" target="_blank">\\1\\2</a>', $html);
+				$html = cmandrillHelperUtility::makeClickableUrls($html);
 			}
 
 			$mandrill->template_content = array(

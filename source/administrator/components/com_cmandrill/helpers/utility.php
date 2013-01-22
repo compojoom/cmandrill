@@ -62,4 +62,21 @@ class cmandrillHelperUtility
 		}
 	}
 
+	/**
+	 * Function that will search plain-text for urls in it and will add the
+	 * html <a> tag.
+	 * @param $text
+	 * @return mixed
+	 */
+	public static function makeClickableUrls($text) {
+		return preg_replace_callback(
+			'#\bhttps?://[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/))#',
+			create_function(
+				'$matches',
+				'return "<a href=\'{$matches[0]}\'>{$matches[0]}</a>";'
+			),
+			$text
+		);
+	}
+
 }
