@@ -32,7 +32,6 @@ $days = abs(floor(strtotime('now') / (60 * 60 * 24)) - floor(strtotime($info->cr
 			<?php endif; ?>
 			<div
 				class="muted small"><?php echo JText::sprintf('COM_CMANDRILL_BASIC_STATS', 'http://mandrillapp.com'); ?>
-				.
 			</div>
 			<div class="row-fluid">
 				<div class="span6">
@@ -50,20 +49,20 @@ $days = abs(floor(strtotime('now') / (60 * 60 * 24)) - floor(strtotime($info->cr
 							</tr>
 							<tr>
 								<td><b><?php echo JText::_('COM_CMANDRILL_DELIVERABILITY'); ?></b></td>
-								<td><?php echo round(($delivered7 / $sent7) * 100, 1); ?>%</td>
+								<td><?php echo ($sent7) ? round(($delivered7 / $sent7) * 100, 1) : 0; ?>%</td>
 							</tr>
 							</tbody>
 						</table>
 
 						<div class="stat-block span5">
 					<span
-						class="stat"><?php echo round(($stats->last_7_days->opens / $stats->last_7_days->sent) * 100, 1); ?>
+						class="stat"><?php echo ($stats->last_7_days->sent) ? round(($stats->last_7_days->opens / $stats->last_7_days->sent) * 100, 1) : 0; ?>
 						%</span>
 							<span class="label"><?php echo JText::_('COM_CMANDRILL_AVG_OPEN_RATE'); ?></span>
 						</div>
 						<div class="stat-block span5">
 					<span
-						class="stat"><?php echo round(($stats->last_7_days->clicks / $stats->last_7_days->sent) * 100, 1); ?>
+						class="stat"><?php echo ($stats->last_7_days->sent) ? round(($stats->last_7_days->clicks / $stats->last_7_days->sent) * 100, 1) : 0; ?>
 						%</span>
 							<span class="label"><?php echo JText::_('COM_CMANDRILL_AVG_CLICK_RATE'); ?></span>
 						</div>
@@ -80,7 +79,7 @@ $days = abs(floor(strtotime('now') / (60 * 60 * 24)) - floor(strtotime($info->cr
 						</tr>
 						<tr>
 							<td><b><?php echo JText::_('COM_CMANDRILL_AVG_SENDS_DAILY'); ?></b></td>
-							<td><?php echo (int)($stats->all_time->sent / $days); ?></td>
+							<td><?php echo ($days) ? (int)($stats->all_time->sent / $days) : 0; ?></td>
 						</tr>
 						<tr>
 							<td><b><?php echo JText::_('COM_CMANDRILL_TOTAL_SPAM_COMPLAINTS'); ?></b></td>
@@ -88,7 +87,7 @@ $days = abs(floor(strtotime('now') / (60 * 60 * 24)) - floor(strtotime($info->cr
 						</tr>
 						<tr>
 							<td><b><?php echo JText::_('COM_CMANDRILL_AVG_SPAM_COMPLAINTS'); ?></b></td>
-							<td><?php echo $stats->all_time->complaints / $days; ?></td>
+							<td><?php echo ($days) ? $stats->all_time->complaints / $days : 0; ?></td>
 						</tr>
 						<tr>
 							<td><b><?php echo JText::_('COM_CMANDRILL_HARD_BOUNCES'); ?></b></td>
@@ -96,7 +95,7 @@ $days = abs(floor(strtotime('now') / (60 * 60 * 24)) - floor(strtotime($info->cr
 						</tr>
 						<tr>
 							<td><b><?php echo JText::_('COM_CMANDRILL_AVG_HARD_BOUNCES'); ?></b></td>
-							<td><?php echo (int)($stats->all_time->hard_bounces / $days); ?></td>
+							<td><?php echo ($days) ? (int)($stats->all_time->hard_bounces / $days) : 0; ?></td>
 						</tr>
 						<tr>
 							<td><b><?php echo JText::_('COM_CMANDRILL_SOFT_BOUNCES'); ?></b></td>
@@ -104,15 +103,15 @@ $days = abs(floor(strtotime('now') / (60 * 60 * 24)) - floor(strtotime($info->cr
 						</tr>
 						<tr>
 							<td><b><?php echo JText::_('COM_CMANDRILL_AVG_SOFT_BOUNCES'); ?></b></td>
-							<td><?php echo (int)($stats->all_time->soft_bounces / $days); ?></td>
+							<td><?php echo ($days) ? (int)($stats->all_time->soft_bounces / $days) : 0; ?></td>
 						</tr>
 						<tr>
 							<td><b><?php echo JText::_('COM_CMANDRILL_AVG_BOUNCES_DAILY'); ?></b></td>
-							<td><?php echo (int)(($stats->all_time->hard_bounces + $stats->all_time->soft_bounces) / $days); ?></td>
+							<td><?php echo ($days) ? (int)(($stats->all_time->hard_bounces + $stats->all_time->soft_bounces) / $days) : 0; ?></td>
 						</tr>
 						<tr>
 							<td><b><?php echo JText::_('COM_CMANDRILL_AVG_UNSUB'); ?></b></td>
-							<td><?php echo $stats->all_time->unsubs / $days; ?></td>
+							<td><?php echo ($days) ? $stats->all_time->unsubs / $days : 0; ?></td>
 						</tr>
 						</tbody>
 					</table>
@@ -132,14 +131,22 @@ $days = abs(floor(strtotime('now') / (60 * 60 * 24)) - floor(strtotime($info->cr
 					</tr>
 					</thead>
 					<tbody>
-					<?php foreach ($urls as $url) : ?>
+					<?php if (count($urls)) : ?>
+						<?php foreach ($urls as $url) : ?>
+							<tr>
+								<td><a href="<?php echo $url->url; ?>" target="_blank"><?php echo $url->url; ?></a></td>
+								<td><?php echo $url->sent;?></td>
+								<td><?php echo $url->unique_clicks; ?></td>
+								<td><?php echo $url->clicks; ?></td>
+							</tr>
+						<?php endforeach; ?>
+					<?php else : ?>
 						<tr>
-							<td><a href="<?php echo $url->url; ?>" target="_blank"><?php echo $url->url; ?></a></td>
-							<td><?php echo $url->sent;?></td>
-							<td><?php echo $url->unique_clicks; ?></td>
-							<td><?php echo $url->clicks; ?></td>
+							<td colspan="4">
+								<?php echo JText::_('COM_MANDRILL_THERE_ARE_NO_TRACKED_URLS_YET'); ?>
+							</td>
 						</tr>
-					<?php endforeach; ?>
+					<?php endif; ?>
 					</tbody>
 
 				</table>
