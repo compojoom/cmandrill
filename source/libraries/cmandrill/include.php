@@ -14,7 +14,7 @@ if (!defined('CMANDRILL_INCLUDED'))
 {
 	define('CMANDRILL_INCLUDED', '3.0.0');
 
-// Register the FOF autoloader
+// Register the CMandrill autoloader
 	require_once __DIR__ . '/autoloader/autoloader.php';
 	CMandrillAutoloader::init();
 }

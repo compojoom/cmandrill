@@ -25,7 +25,7 @@ class CMandrillAutoloader
 	public static $autoloader = null;
 
 	/**
-	 * The path to the FOF root directory
+	 * The path to the CMandrill root directory
 	 *
 	 * @var   string
 	 */
@@ -65,9 +65,7 @@ class CMandrillAutoloader
 	 */
 	public function autoload_cmandrill_library($class_name)
 	{
-
-
-		// Make sure the class has a FOF prefix
+		// Make sure the class has a CMandrill prefix
 		if (substr(strtolower($class_name), 0, 9) != 'cmandrill')
 		{
 			return;
@@ -90,7 +88,6 @@ class CMandrillAutoloader
 		}
 
 		// Then try the duplicate last name structured directory format (not recommended)
-var_dump($class);
 		if (!class_exists($class_name, false))
 		{
 			reset($class);
