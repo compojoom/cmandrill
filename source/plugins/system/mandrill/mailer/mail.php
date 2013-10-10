@@ -1,19 +1,20 @@
 <?php
-
 /**
- * @author Daniel Dimitrov - http://compojoom.com
+ * @author     Daniel Dimitrov <daniel@compojoom.com>
+ * @date       22.02.13
+ *
+ * @copyright  Copyright (C) 2008 - 2013 compojoom.com . All rights reserved.
+ * @license    GNU General Public License version 2 or later; see LICENSE
  *
  * This is a modified version of the JMailer Class that works with
  * the Mandrill API
- *
- * @license        GNU/GPL, see LICENSE.php
  */
 
 /**
  * @version        $Id: mail.php 14401 2010-01-26 14:10:00Z louis $
  * @package        Joomla.Framework
- * @subpackage    Mail
- * @copyright    Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved.
+ * @subpackage     Mail
+ * @copyright      Copyright (C) 2005 - 2010 Open Source Matters. All rights reserved.
  * @license        GNU/GPL, see LICENSE.php
  * Joomla! is free software. This version may have been modified pursuant
  * to the GNU General Public License, and as distributed it includes or
@@ -27,7 +28,7 @@ defined('JPATH_BASE') or die();
 jimport('phpmailer.phpmailer');
 jimport('joomla.mail.helper');
 
-JLoader::discover('cmandrillHelper', JPATH_ADMINISTRATOR.'/components/com_cmandrill/helpers/');
+JLoader::discover('cmandrillHelper', JPATH_ADMINISTRATOR . '/components/com_cmandrill/helpers/');
 
 /**
  * Email Class.  Provides a common interface to send email from the Joomla! Platform
@@ -46,23 +47,22 @@ class JMail extends PHPMailer
 
 	/**
 	 * Constructor
-	 *
 	 */
 	public function __construct()
 	{
-
-		// phpmailer has an issue using the relative path for it's language files
+		// Phpmailer has an issue using the relative path for it's language files
 		$this->SetLanguage('joomla', JPATH_PLATFORM . '/phpmailer/language/');
 
-		// load the admin language
+		// Load the admin language
 		$language = JFactory::getLanguage();
 		$language->load('plg_system_mandrill.sys', JPATH_ADMINISTRATOR, 'en-GB', true);
 		$language->load('plg_system_mandrill.sys', JPATH_ADMINISTRATOR, $language->getDefault(), true);
 		$language->load('plg_system_mandrill.sys', JPATH_ADMINISTRATOR, null, true);
 
-		// initialize the logger class
+		// Initialize the logger class
 		jimport('joomla.error.log');
 		$date = JFactory::getDate()->format('Y_m');
+
 		// Add the logger.
 		JLog::addLogger(
 			array(
@@ -70,7 +70,6 @@ class JMail extends PHPMailer
 			)
 
 		);
-
 	}
 
 	/**
@@ -88,7 +87,8 @@ class JMail extends PHPMailer
 	 */
 	public static function getInstance($id = 'Joomla')
 	{
-		if (empty(self::$instances[$id])) {
+		if (empty(self::$instances[$id]))
+		{
 			self::$instances[$id] = new JMail;
 		}
 
@@ -96,30 +96,56 @@ class JMail extends PHPMailer
 	}
 
 	/**
+	 * Sends the email -> either trough PHPMailer or through Mandrill
+	 *
 	 * @return mixed True if successful, a JError object otherwise
 	 */
 	public function Send()
 	{
-
-		if (!$this->isDailyQuotaExeeded() && !count($this->cc)) {
+		if (!$this->isDailyQuotaExeeded() && !count($this->cc))
+		{
 			return $this->mandrillSend();
-		} else {
-			return $this->phpMailerSend();
 		}
+
+		return $this->phpMailerSend();
 	}
 
-	private function phpMailerSend()
+	/**
+	 * Send the mail with phpMailer
+	 *
+	 * @return  mixed  True if successful; JError if using legacy tree (no exception thrown in that case).
+	 *
+	 * @since   11.1
+	 * @throws  RuntimeException
+	 */
+	public function phpMailerSend()
 	{
-		if (($this->Mailer == 'mail') && !function_exists('mail')) {
-			return JError::raiseNotice(500, JText::_('JLIB_MAIL_FUNCTION_DISABLED'));
+		if (($this->Mailer == 'mail') && !function_exists('mail'))
+		{
+			if (class_exists('JError'))
+			{
+				return JError::raiseNotice(500, JText::_('JLIB_MAIL_FUNCTION_DISABLED'));
+			}
+			else
+			{
+				throw new RuntimeException(sprintf('%s::Send mail not enabled.', get_class($this)));
+			}
 		}
 
-		@ $result = parent::Send();
+		@$result = parent::Send();
 
-		if ($result == false) {
-			// TODO: Set an appropriate error number
-			$result = & JError::raiseNotice(500, JText::_($this->ErrorInfo));
+		if ($result == false)
+		{
+			if (class_exists('JError'))
+			{
+				$result = JError::raiseNotice(500, JText::_($this->ErrorInfo));
+			}
+			else
+			{
+				throw new RuntimeException(sprintf('%s::Send failed: "%s".', get_class($this), $this->ErrorInfo));
+			}
 		}
+
 		return $result;
 	}
 
@@ -135,23 +161,28 @@ class JMail extends PHPMailer
 	 */
 	public function setSender($from)
 	{
-		if (is_array($from)) {
+		if (is_array($from))
+		{
 			// If $from is an array we assume it has an address and a name
-			if (isset($from[2])) {
+			if (isset($from[2]))
+			{
 				// If it is an array with entries, use them
-				$this->SetFrom(JMailHelper::cleanLine($from[0]), JMailHelper::cleanLine($from[1]), (bool)$from[2]);
+				$this->SetFrom(JMailHelper::cleanLine($from[0]), JMailHelper::cleanLine($from[1]), (bool) $from[2]);
 			}
-			else {
+			else
+			{
 				$this->SetFrom(JMailHelper::cleanLine($from[0]), JMailHelper::cleanLine($from[1]));
 			}
 		}
-		elseif (is_string($from)) {
+		elseif (is_string($from))
+		{
 			// If it is a string we assume it is just the address
 			$this->SetFrom(JMailHelper::cleanLine($from));
 		}
-		else {
+		else
+		{
 			// If it is neither, we throw a warning
-			JError::raiseWarning(0, JText::sprintf('JLIB_MAIL_INVALID_EMAIL_SENDER', $from));
+			JLog::add(JText::sprintf('JLIB_MAIL_INVALID_EMAIL_SENDER', $from), JLog::WARNING, 'jerror');
 		}
 
 		return $this;
@@ -206,13 +237,16 @@ class JMail extends PHPMailer
 	public function addRecipient($recipient, $name = '')
 	{
 		// If the recipient is an array, add each recipient... otherwise just add the one
-		if (is_array($recipient)) {
-			foreach ($recipient as $to) {
+		if (is_array($recipient))
+		{
+			foreach ($recipient as $to)
+			{
 				$to = JMailHelper::cleanLine($to);
 				$this->AddAddress($to);
 			}
 		}
-		else {
+		else
+		{
 			$recipient = JMailHelper::cleanLine($recipient);
 			$this->AddAddress($recipient);
 		}
@@ -223,19 +257,22 @@ class JMail extends PHPMailer
 	/**
 	 * This method is not implemented in Mailchimp's Mandrill, so we just log the attempt to send a CC
 	 *
-	 * @access public
-	 * @param mixed $cc Either a string or array of strings [e-mail address(es)]
-	 * @param string $name
-	 * @return void
-	 * @since 1.5
+	 * @param   mixed   $cc    - Either a string or array of strings [e-mail address(es)]
+	 * @param   string  $name  - cc name
+	 *
+	 * @return JMail
 	 */
 	public function addCC($cc, $name = '')
 	{
 		$message = 'the addCC method is not supported by the mailchip\'s Mandrill API. We will send this mail with PHPMailer';
-		//If the carbon copy recipient is an aray, add each recipient... otherwise just add the one
-		if (isset($cc)) {
-			if (is_array($cc)) {
-				foreach ($cc as $to) {
+
+		// If the carbon copy recipient is an aray, add each recipient... otherwise just add the one
+		if (isset($cc))
+		{
+			if (is_array($cc))
+			{
+				foreach ($cc as $to)
+				{
 					$to = JMailHelper::cleanLine($to);
 					parent::AddCC($to);
 
@@ -243,7 +280,9 @@ class JMail extends PHPMailer
 
 					$this->writeToLog($message);
 				}
-			} else {
+			}
+			else
+			{
 				$cc = JMailHelper::cleanLine($cc);
 				parent::AddCC($cc);
 
@@ -253,9 +292,7 @@ class JMail extends PHPMailer
 			}
 		}
 
-
 		return $this;
-
 	}
 
 	/**
@@ -271,14 +308,18 @@ class JMail extends PHPMailer
 	public function addBCC($bcc, $name = '')
 	{
 		// If the blind carbon copy recipient is an array, add each recipient... otherwise just add the one
-		if (isset($bcc)) {
-			if (is_array($bcc)) {
-				foreach ($bcc as $to) {
+		if (isset($bcc))
+		{
+			if (is_array($bcc))
+			{
+				foreach ($bcc as $to)
+				{
 					$to = JMailHelper::cleanLine($to);
 					parent::AddBCC($to);
 				}
 			}
-			else {
+			else
+			{
 				$bcc = JMailHelper::cleanLine($bcc);
 				parent::AddBCC($bcc);
 			}
@@ -302,13 +343,17 @@ class JMail extends PHPMailer
 	public function addAttachment($attachment, $name = '', $encoding = 'base64', $type = 'application/octet-stream')
 	{
 		// If the file attachments is an array, add each file... otherwise just add the one
-		if (isset($attachment)) {
-			if (is_array($attachment)) {
-				foreach ($attachment as $file) {
+		if (isset($attachment))
+		{
+			if (is_array($attachment))
+			{
+				foreach ($attachment as $file)
+				{
 					parent::AddAttachment($file, $name, $encoding, $type);
 				}
 			}
-			else {
+			else
+			{
 				parent::AddAttachment($attachment, $name, $encoding, $type);
 			}
 		}
@@ -319,9 +364,9 @@ class JMail extends PHPMailer
 	/**
 	 * Add Reply to email address(es) to the email
 	 *
-	 * @param   array  $replyto  Either an array or multi-array of form
-	 *                           <code>array([0] => email Address [1] => Name)</code>
-	 * @param array|string $name Either an array or single string
+	 * @param   array         $replyto  Either an array or multi-array of form
+	 *                                  <code>array([0] => email Address [1] => Name)</code>
+	 * @param   array|string  $name     Either an array or single string
 	 *
 	 * @return  JMail  Returns this object for chaining.
 	 *
@@ -330,14 +375,17 @@ class JMail extends PHPMailer
 	public function addReplyTo($replyto, $name = '')
 	{
 		// Take care of reply email addresses
-		if (is_array($replyto[0])) {
-			foreach ($replyto as $to) {
+		if (is_array($replyto[0]))
+		{
+			foreach ($replyto as $to)
+			{
 				$to0 = JMailHelper::cleanLine($to[0]);
 				$to1 = JMailHelper::cleanLine($to[1]);
 				parent::AddReplyTo($to0, $to1);
 			}
 		}
-		else {
+		else
+		{
 			$replyto0 = JMailHelper::cleanLine($replyto[0]);
 			$replyto1 = JMailHelper::cleanLine($replyto[1]);
 			parent::AddReplyTo($replyto0, $replyto1);
@@ -359,12 +407,14 @@ class JMail extends PHPMailer
 	{
 		$this->Sendmail = $sendmail;
 
-		if (!empty($this->Sendmail)) {
+		if (!empty($this->Sendmail))
+		{
 			$this->IsSendmail();
 
 			return true;
 		}
-		else {
+		else
+		{
 			$this->IsMail();
 
 			return false;
@@ -393,54 +443,65 @@ class JMail extends PHPMailer
 		$this->Password = $pass;
 		$this->Port = $port;
 
-		if ($secure == 'ssl' || $secure == 'tls') {
+		if ($secure == 'ssl' || $secure == 'tls')
+		{
 			$this->SMTPSecure = $secure;
 		}
 
 		if (($this->SMTPAuth !== null && $this->Host !== null && $this->Username !== null && $this->Password !== null)
-			|| ($this->SMTPAuth === null && $this->Host !== null)
-		) {
+			|| ($this->SMTPAuth === null && $this->Host !== null))
+		{
 			$this->IsSMTP();
 
 			return true;
 		}
-		else {
+		else
+		{
 			$this->IsMail();
 
 			return false;
 		}
 	}
 
-
-
 	/**
 	 * Function to send an email
 	 *
-	 * @param   string   $from         From email address
-	 * @param   string   $fromName     From name
-	 * @param   mixed    $recipient    Recipient email address(es)
-	 * @param   string   $subject      email subject
-	 * @param   string   $body         Message body
-	 * @param bool|int $mode false = plain text, true = HTML
-	 * @param   mixed    $cc           CC email address(es)
-	 * @param   mixed    $bcc          BCC email address(es)
-	 * @param   mixed    $attachment   Attachment file name(s)
-	 * @param   mixed    $replyTo      Reply to email address(es)
-	 * @param   mixed    $replyToName  Reply to name(s)
+	 * @param   string    $from         From email address
+	 * @param   string    $fromName     From name
+	 * @param   mixed     $recipient    Recipient email address(es)
+	 * @param   string    $subject      email subject
+	 * @param   string    $body         Message body
+	 * @param   bool|int  $mode         false = plain text, true = HTML
+	 * @param   mixed     $cc           CC email address(es)
+	 * @param   mixed     $bcc          BCC email address(es)
+	 * @param   mixed     $attachment   Attachment file name(s)
+	 * @param   mixed     $replyTo      Reply to email address(es)
+	 * @param   mixed     $replyToName  Reply to name(s)
 	 *
 	 * @return  boolean  True on success
 	 *
 	 * @since   11.1
 	 */
-	public function sendMail($from, $fromName, $recipient, $subject, $body, $mode = 0, $cc = null, $bcc = null, $attachment = null, $replyTo = null,
-	                         $replyToName = null)
+	public function sendMail(
+		$from,
+		$fromName,
+		$recipient,
+		$subject,
+		$body,
+		$mode = 0,
+		$cc = null,
+		$bcc = null,
+		$attachment = null,
+		$replyTo = null,
+		$replyToName = null)
 	{
 		$this->setSender(array($from, $fromName));
 		$this->setSubject($subject);
 		$this->setBody($body);
 
 		// Are we sending the email as HTML?
-		if ($mode) {
+		if ($mode)
+		{
 			$this->IsHTML(true);
 		}
 
@@ -450,14 +511,17 @@ class JMail extends PHPMailer
 		$this->addAttachment($attachment);
 
 		// Take care of reply email addresses
-		if (is_array($replyTo)) {
+		if (is_array($replyTo))
+		{
 			$numReplyTo = count($replyTo);
 
-			for ($i = 0; $i < $numReplyTo; $i++) {
+			for ($i = 0; $i < $numReplyTo; $i++)
+			{
 				$this->addReplyTo(array($replyTo[$i], $replyToName[$i]));
 			}
 		}
-		elseif (isset($replyTo)) {
+		elseif (isset($replyTo))
+		{
 			$this->addReplyTo(array($replyTo, $replyToName));
 		}
 
@@ -493,43 +557,58 @@ class JMail extends PHPMailer
 		return $this->Send();
 	}
 
+	/**
+	 * Check the daily quota limit
+	 *
+	 * @return bool
+	 */
 	private function isDailyQuotaExeeded()
 	{
-
-		$data = cmandrillHelperMandrill::send('users','info');
+		$data = cmandrillHelperMandrill::send('users', 'info');
 
 		$dailyQuota = $data->hourly_quota * 24;
 
 		$sentToday = $data->stats->today->sent;
 
-		if ((int)$dailyQuota <= (int)$sentToday) {
-
-			$this->writeToLog( JText::sprintf('PLG_SYSTEM_MANDRILL_DAILY_QUOTA_EXCEEDED' ,(int)$dailyQuota, (int)$sentToday));
+		if ((int) $dailyQuota <= (int) $sentToday)
+		{
+			$this->writeToLog(JText::sprintf('PLG_SYSTEM_MANDRILL_DAILY_QUOTA_EXCEEDED', (int) $dailyQuota, (int) $sentToday));
 
 			return true;
 		}
+
 		return false;
 	}
 
+	/**
+	 * Send the mail through the Mandrill API
+	 *
+	 * @return bool|mixed
+	 */
 	private function mandrillSend()
 	{
 		$action = 'send';
 		$to = array();
 		$attachments = $this->GetAttachments();
 		$mAttachments = array();
-		if(count($attachments) > 0) {
 
-			foreach($attachments as $attachment) {
-				// a lot of people are setting wrong mime_type when using the addAtachment function
+		if (count($attachments) > 0)
+		{
+			foreach ($attachments as $attachment)
+			{
+				// A lot of people are setting wrong mime_type when using the addAtachment function
 				// let us try to determine the mime_type ourselves on the base of the filename
-				//
 				$mime_type = $this->detectMimeType($attachment[1]);
-				if(!$mime_type) {
+
+				if (!$mime_type)
+				{
 					$this->writeToLog(JText::sprintf('PLG_SYSTEM_MANDRILL_UNSUPPORTED_ATTACHMENT', $attachment[2], $mime_type));
-					// if one of the files is not an image/txt or pdf, then use standard phpmailer
+
+					// If one of the files is not an image/txt or pdf, then use standard phpmailer
 					// the mandrill api doesn't support other formats right now
 					$this->phpMailerSend();
-				};
+				}
+
 				$mAttachments[] = array(
 					'name' => $attachment[2],
 					'type' => $mime_type,
@@ -538,38 +617,48 @@ class JMail extends PHPMailer
 			}
 		}
 
-		$mandrill = new stdClass();
+		$mandrill = new stdClass;
 		$mandrill->message = array(
 			'subject' => $this->Subject,
 			'from_email' => $this->From,
 			'from_name' => $this->FromName
 		);
 
-		if(count($mAttachments)) {
+		if (count($mAttachments))
+		{
 			$mandrill->message['attachments'] = $mAttachments;
 		}
 
-
-		// let us set some tags
+		// Let us set some tags
 		$input = JFactory::getApplication()->input;
-		if ($input->get('option')) {
-			$mandrill->message['tags'][] = 'component_' .$input->get('option');
+
+		if ($input->get('option'))
+		{
+			$mandrill->message['tags'][] = 'component_' . $input->get('option');
 		}
-		if ($input->get('view')) {
+
+		if ($input->get('view'))
+		{
 			$mandrill->message['tags'][] = 'view_' . $input->get('view');
 		}
-		if ($input->get('task')) {
+
+		if ($input->get('task'))
+		{
 			$mandrill->message['tags'][] = 'task_' . $input->get('task');
 		}
 
-		if (count($this->ReplyTo) > 0) {
+		if (count($this->ReplyTo) > 0)
+		{
 			$replyTo = array_keys($this->ReplyTo);
 			$mandrill->message['headers'] = array('Reply-To' => $replyTo[0]);
 		}
 
-		if ($this->ContentType == 'text/plain') {
+		if ($this->ContentType == 'text/plain')
+		{
 			$mandrill->message['text'] = $this->Body;
-		} else {
+		}
+		else
+		{
 			$mandrill->message['html'] = $this->Body;
 			$message['auto_text'] = true;
 		}
@@ -579,33 +668,39 @@ class JMail extends PHPMailer
 
 		$recipients = $this->to;
 
-//		let us merge the bcc recipients with the to recipients. the Mandrill API
-//		will send an individual mail to everyone
-		if(count($this->bcc) > 0) {
+		// Let us merge the bcc recipients with the to recipients. the Mandrill API
+		// will send an individual mail to everyone
+		if (count($this->bcc) > 0)
+		{
 			$recipients = array_merge($recipients, $this->bcc);
 		}
-		foreach ($recipients as $value) {
+
+		foreach ($recipients as $value)
+		{
 			$to[] = array(
 				'email' => $value[0],
 				'name' => $value[1]
 			);
 		}
 
-		// if we have a template, then use it!
+		// If we have a template, then use it!
 		$template = cmandrillHelperMandrill::getTemplate();
 
-		if($template) {
+		if ($template)
+		{
 			$mandrill->template_name = $template;
-
-
 			$html = $this->Body;
-			// if we have a template, we need to send the mail in HTML format
+
+			// If we have a template, we need to send the mail in HTML format
 			// so if joomla is sending it in text/plain, then we need to make some modifications to it
-			if ($this->ContentType == 'text/plain') {
+			if ($this->ContentType == 'text/plain')
+			{
 				$html = nl2br(htmlspecialchars($html));
-				// replace multiple spaces with single spaces
+
+				// Replace multiple spaces with single spaces
 				$html = preg_replace('/\s\s+/', ' ', $html);
-				// replace URLs with <a href...> elements
+
+				// Replace URLs with <a href...> elements
 				$html = cmandrillHelperUtility::makeClickableUrls($html);
 			}
 
@@ -618,46 +713,64 @@ class JMail extends PHPMailer
 			$action = 'send-template';
 		}
 
-		// if we have more than 1000 recipients, let us send this in chunks
+		// If we have more than 1000 recipients, let us send this in chunks
 		$to = array_chunk($to, 1000);
 		$status = array();
-		foreach($to as $value) {
+
+		foreach ($to as $value)
+		{
 			$mandrill->message['to'] = $value;
 
 			$data = cmandrillHelperMandrill::send('messages', $action, $mandrill, false);
 
-			// check if we have have a correct response
-			if (is_array($data)) {
-				foreach ($data as $value) {
-					$status[$value->status][] = array($value->email, '');
+			// Check if we have have a correct response
+			if (is_array($data))
+			{
+				foreach ($data as $user)
+				{
+					$status[$user->status][] = array($user->email, '');
 				}
 			}
 		}
 
-		// queued mails??? Hm, maybe we've reached the API limit. Let us log this
-		if (isset($status['queue']) && count($status['queue'])) {
+		// Queued mails??? Hm, maybe we've reached the API limit. Let us log this
+		if (isset($status['queue']) && count($status['queue']))
+		{
 			$this->writeToLog(JText::sprintf('PLG_MANDRILL_EMAIL_TO_QUEUED', implode(',', $status['queue'])));
 		}
 
-		// if we have rejected emails - try to send them with phpMailer
-		// not a perfect solution because we will return the result form phpMailer instead of the Mandrill
-		// but better to try to deliver again than to fail to send the message
-		if (isset($status['rejected']) && count($status['rejected'])) {
-			$this->writeToLog(JText::sprintf('PLG_MANDRILL_EMAIL_TO_REJECTED',implode(',', $status['rejected'])));
+		/**
+		 * If we have rejected emails - try to send them with phpMailer
+		 * not a perfect solution because we will return the result form phpMailer instead of the Mandrill
+		 * but better to try to deliver again than to fail to send the message
+		 */
+		if (isset($status['rejected']) && count($status['rejected']))
+		{
+			$this->writeToLog(JText::sprintf('PLG_MANDRILL_EMAIL_TO_REJECTED', implode(',', $status['rejected'])));
 			$this->ClearAddresses();
 			$this->addRecipient($status['rejected']);
+
 			return $this->phpMailerSend();
 		}
 
-		// let us hope that we always come so far!
-		if (isset($status['sent']) && count($status['sent'])) {
+		// Iet us hope that we always come so far!
+		if (isset($status['sent']) && count($status['sent']))
+		{
 			return true;
 		}
 
 		return false;
 	}
 
-	private function detectMimeType($filename) {
+	/**
+	 * Detect the mime type of the file
+	 *
+	 * @param   string  $filename  - the file name
+	 *
+	 * @return bool
+	 */
+	private function detectMimeType($filename)
+	{
 		$mime_types = array(
 
 			'txt' => 'text/plain',
@@ -666,7 +779,7 @@ class JMail extends PHPMailer
 			'php' => 'text/html',
 			'css' => 'text/css',
 
-			// images
+			// Images
 			'png' => 'image/png',
 			'jpe' => 'image/jpeg',
 			'jpeg' => 'image/jpeg',
@@ -679,12 +792,14 @@ class JMail extends PHPMailer
 			'svg' => 'image/svg+xml',
 			'svgz' => 'image/svg+xml',
 
-			// adobe
+			// Adobe
 			'pdf' => 'application/pdf'
-			);
+		);
 
-		$ext = strtolower(array_pop(explode('.',$filename)));
-		if (array_key_exists($ext, $mime_types)) {
+		$ext = strtolower(array_pop(explode('.', $filename)));
+
+		if (array_key_exists($ext, $mime_types))
+		{
 			return $mime_types[$ext];
 		}
 
@@ -692,12 +807,14 @@ class JMail extends PHPMailer
 	}
 
 	/**
+	 * Writes to the log
 	 *
-	 * @param $message
+	 * @param   string  $message  - the message
+	 *
+	 * @return void
 	 */
 	private function writeToLog($message)
 	{
 		JLog::add($message, JLog::WARNING);
 	}
-
 }
