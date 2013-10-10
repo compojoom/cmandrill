@@ -39,7 +39,7 @@ class CmandrillTemplates
 	 * @param   string   $text        - a default text part to be used when sending with this template
 	 * @param   boolean  $publish     - set to false to add a draft template without publishing
 	 *
-	 * @return struct the information saved about the new template
+	 * @return object the information saved about the new template
 	 *     - slug string the immutable unique code name of the template
 	 *     - name string the name of the template
 	 *     - code string the full HTML code of the template, with mc:edit attributes marking the editable elements - draft version
@@ -78,7 +78,7 @@ class CmandrillTemplates
 	 *
 	 * @param   string  $name  - the immutable name of an existing template
 	 *
-	 * @return struct the requested template information
+	 * @return object the requested template information
 	 *     - slug string the immutable unique code name of the template
 	 *     - name string the name of the template
 	 *     - code string the full HTML code of the template, with mc:edit attributes marking the editable elements - draft version
@@ -116,7 +116,7 @@ class CmandrillTemplates
 	 * @param   string   $text        - the new default text part to be used
 	 * @param   boolean  $publish     - set to false to update the draft version of the template without publishing
 	 *
-	 * @return struct the template that was updated
+	 * @return object the template that was updated
 	 *     - slug string the immutable unique code name of the template
 	 *     - name string the name of the template
 	 *     - code string the full HTML code of the template, with mc:edit attributes marking the editable elements - draft version
@@ -156,7 +156,7 @@ class CmandrillTemplates
 	 *
 	 * @param   string  $name  - the immutable name of an existing template
 	 *
-	 * @return struct the template that was published
+	 * @return object the template that was published
 	 *     - slug string the immutable unique code name of the template
 	 *     - name string the name of the template
 	 *     - code string the full HTML code of the template, with mc:edit attributes marking the editable elements - draft version
@@ -188,7 +188,7 @@ class CmandrillTemplates
 	 *
 	 * @param   string  $name  - the immutable name of an existing template
 	 *
-	 * @return struct the template that was deleted
+	 * @return object the template that was deleted
 	 *     - slug string the immutable unique code name of the template
 	 *     - name string the name of the template
 	 *     - code string the full HTML code of the template, with mc:edit attributes marking the editable elements - draft version
@@ -218,8 +218,8 @@ class CmandrillTemplates
 	/**
 	 * Return a list of all the templates available to this user
 	 *
-	 * @return array an array of structs with information about each template
-	 *     - return[] struct the information on each template in the account
+	 * @return array an array of objects with information about each template
+	 *     - return[] object the information on each template in the account
 	 *         - slug string the immutable unique code name of the template
 	 *         - name string the name of the template
 	 *         - code string the full HTML code of the template, with mc:edit attributes marking the editable elements - draft version
@@ -252,7 +252,7 @@ class CmandrillTemplates
 	 * @param   string  $name  - the name of an existing template
 	 *
 	 * @return array the array of history information
-	 *     - return[] struct the stats for a single hour
+	 *     - return[] object the stats for a single hour
 	 *         - time string the hour as a UTC date string in YYYY-MM-DD HH:MM:SS format
 	 *         - sent integer the number of emails that were sent during the hour
 	 *         - hard_bounces integer the number of emails that hard bounced during the hour
@@ -275,18 +275,18 @@ class CmandrillTemplates
 	 * Inject content and optionally merge fields into a template, returning the HTML that results
 	 *
 	 * @param   string  $template_name     - the immutable name of a template that exists in the user's account
-	 * @param   array   $template_content  - an array of template content to render.  Each item in the array should be a struct with two keys - name:
+	 * @param   array   $template_content  - an array of template content to render.  Each item in the array should be an object with two keys - name:
 	 *                                       the name of the content block to set the content for, and content: the actual content to put into the block
-	 *                                       template_content[] struct the injection of a single piece of content into a single editable region
+	 *                                       template_content[] object the injection of a single piece of content into a single editable region
 	 *                                       name string the name of the mc:edit editable region to inject into
 	 *                                       content string the content to inject
 	 * @param   array   $merge_vars        - optional merge variables to use for injecting merge field content.  If this is not provided, no merge
 	 *                                       fields will be replaced.
-	 *                                       merge_vars[] struct a single merge variable
+	 *                                       merge_vars[] object a single merge variable
 	 *                                       name string the merge variable's name. Merge variable names are case-insensitive and may not start with _
 	 *                                       content string the merge variable's content
 	 *
-	 * @return struct the result of rendering the given template with the content and merge field values injected
+	 * @return object the result of rendering the given template with the content and merge field values injected
 	 *     - html string the rendered HTML as a string
 	 */
 	public function render($template_name, $template_content, $merge_vars = null)
@@ -295,5 +295,4 @@ class CmandrillTemplates
 
 		return $this->master->call('templates/render', $params);
 	}
-
 }

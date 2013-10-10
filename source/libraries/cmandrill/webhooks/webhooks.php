@@ -32,7 +32,7 @@ class CmandrillWebhooks
 	 * Get the list of all webhooks defined on the account
 	 *
 	 * @return array the webhooks associated with the account
-	 *     - return[] struct the individual webhook info
+	 *     - return[] object the individual webhook info
 	 *         - id integer a unique integer indentifier for the webhook
 	 *         - url string The URL that the event data will be posted to
 	 *         - description string a description of the webhook
@@ -60,7 +60,7 @@ class CmandrillWebhooks
 	 * @param   array   $events       - an optional list of events that will be posted to the webhook
 	 *                                  events[] string the individual event to listen for
 	 *
-	 * @return struct the information saved about the new webhook
+	 * @return object the information saved about the new webhook
 	 *     - id integer a unique integer indentifier for the webhook
 	 *     - url string The URL that the event data will be posted to
 	 *     - description string a description of the webhook
@@ -85,7 +85,7 @@ class CmandrillWebhooks
 	 *
 	 * @param   integer  $id  - the unique identifier of a webhook belonging to this account
 	 *
-	 * @return struct the information about the webhook
+	 * @return object the information about the webhook
 	 *     - id integer a unique integer indentifier for the webhook
 	 *     - url string The URL that the event data will be posted to
 	 *     - description string a description of the webhook
@@ -114,7 +114,7 @@ class CmandrillWebhooks
 	 * @param   array    $events       - an optional list of events that will be posted to the webhook
 	 *                             - events[] string the individual event to listen for
 	 *
-	 * @return struct the information for the updated webhook
+	 * @return object the information for the updated webhook
 	 *     - id integer a unique integer indentifier for the webhook
 	 *     - url string The URL that the event data will be posted to
 	 *     - description string a description of the webhook
@@ -139,7 +139,7 @@ class CmandrillWebhooks
 	 *
 	 * @param   integer  $id  - the unique identifier of a webhook belonging to this account
 	 *
-	 * @return struct the information for the deleted webhook
+	 * @return object the information for the deleted webhook
 	 *     - id integer a unique integer indentifier for the webhook
 	 *     - url string The URL that the event data will be posted to
 	 *     - description string a description of the webhook

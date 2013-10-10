@@ -35,7 +35,7 @@ class CmandrillWhitelists
 	 *
 	 * @param   string  $email  - an email address to add to the whitelist
 	 *
-	 * @return struct a status object containing the address and the result of the operation
+	 * @return object a status object containing the address and the result of the operation
 	 *     - email string the email address you provided
 	 *     - whether boolean the operation succeeded
 	 */
@@ -53,7 +53,7 @@ class CmandrillWhitelists
 	 * @param   string  $email  - an optional email address or prefix to search by
 	 *
 	 * @return array up to 1000 whitelist entries
-	 *     - return[] struct the information for each whitelist entry
+	 *     - return[] object the information for each whitelist entry
 	 *         - email string the email that is whitelisted
 	 *         - detail string a description of why the email was whitelisted
 	 *         - created_at string when the email was added to the whitelist
@@ -70,7 +70,7 @@ class CmandrillWhitelists
 	 *
 	 * @param   string  $email  - the email address to remove from the whitelist
 	 *
-	 * @return struct a status object containing the address and whether the deletion succeeded
+	 * @return object a status object containing the address and whether the deletion succeeded
 	 *     - email string the email address that was removed from the blacklist
 	 *     - deleted boolean whether the address was deleted successfully
 	 */

@@ -31,17 +31,17 @@ class CmandrillMessages
 	/**
 	 * Send a new transactional message through Mandrill
 	 *
-	 * @param   struct   $message  - the information on the message to send
+	 * @param   object   $message  - the information on the message to send
 	 *                              - html string the full HTML content to be sent
 	 *                              - text string optional full text content to be sent
 	 *                              - subject string the message subject
 	 *                              - from_email string the sender email address.
 	 *                              - from_name string optional from name to be used
 	 *                              - to array an array of recipient information.
-	 *                              - to[] struct a single recipient's information.
+	 *                              - to[] object a single recipient's information.
 	 *                              - email string the email address of the recipient
 	 *                              - name string the optional display name to use for the recipient
-	 *                              - headers struct optional extra headers to add to the message (most headers are allowed)
+	 *                              - headers object optional extra headers to add to the message (most headers are allowed)
 	 *                              - important boolean whether or not this message is important, and should be delivered ahead of non-important messages
 	 *                              - track_opens boolean whether or not to turn on open tracking for the message
 	 *                              - track_clicks boolean whether or not to turn on click tracking for the message
@@ -60,14 +60,14 @@ class CmandrillMessages
 	 *                              - merge boolean whether to evaluate merge tags in the message. Will automatically be set to true if either merge_vars
 	 *                                or global_merge_vars are provided.
 	 *                              - global_merge_vars array global merge variables to use for all recipients. You can override these per recipient.
-	 *                              - global_merge_vars[] struct a single global merge variable
+	 *                              - global_merge_vars[] object a single global merge variable
 	 *                              - name string the global merge variable's name. Merge variable names are case-insensitive and may not start with _
 	 *                              - content string the global merge variable's content
 	 *                              - merge_vars array per-recipient merge variables, which override global merge variables with the same name.
-	 *                              - merge_vars[] struct per-recipient merge variables
+	 *                              - merge_vars[] object per-recipient merge variables
 	 *                              - rcpt string the email address of the recipient that the merge variables should apply to
 	 *                              - vars array the recipient's merge variables
-	 *                              - vars[] struct a single merge variable
+	 *                              - vars[] object a single merge variable
 	 *                              - name string the merge variable's name. Merge variable names are case-insensitive and may not start with _
 	 *                              - content string the merge variable's content
 	 *                              - tags array an array of string to tag the message with.  Stats are accumulated using tags, though we only store the
@@ -84,17 +84,17 @@ class CmandrillMessages
 	 *                                using the Mandrill search api.
 	 *                              - recipient_metadata array Per-recipient metadata that will override the global values specified in the metadata
 	 *                                parameter.
-	 *                              - recipient_metadata[] struct metadata for a single recipient
+	 *                              - recipient_metadata[] object metadata for a single recipient
 	 *                              - rcpt string the email address of the recipient that the metadata is associated with
 	 *                              - values array an associated array containing the recipient's unique metadata. If a key exists in both the
 	 *                                per-recipient metadata and the global metadata, the per-recipient metadata will be used.
 	 *                              - attachments array an array of supported attachments to add to the message
-	 *                              - attachments[] struct a single supported attachment
+	 *                              - attachments[] object a single supported attachment
 	 *                              - type string the MIME type of the attachment
 	 *                              - name string the file name of the attachment
 	 *                              - content string the content of the attachment as a base64-encoded string
 	 *                              - images array an array of embedded images to add to the message
-	 *                              - images[] struct a single embedded image
+	 *                              - images[] object a single embedded image
 	 *                              - type string the MIME type of the image - must start with "image/"
 	 *                              - name string the Content ID of the image - use <img src="cid:THIS_VALUE"> to reference the image in
 	 *                                your HTML content
@@ -109,9 +109,9 @@ class CmandrillMessages
 	 *                                past, the message will be sent immediately. An additional fee applies for scheduled email, and this feature is
 	 *                                only available to accounts with a positive balance.
 	 *
-	 * @return array of structs for each recipient containing the key "email" with the email address and "status" as either "sent", "queued",
+	 * @return array of objects for each recipient containing the key "email" with the email address and "status" as either "sent", "queued",
 	 *          or "rejected"
-	 *     - return[] struct the sending results for a single recipient
+	 *     - return[] object the sending results for a single recipient
 	 *         - email string the email address of the recipient
 	 *         - status string the sending status of the recipient - either "sent", "queued", "scheduled", "rejected", or "invalid"
 	 *         - reject_reason string the reason for the rejection if the recipient status is "rejected"
@@ -129,22 +129,22 @@ class CmandrillMessages
 	 *
 	 * @param   string   $template_name     the immutable name or slug of a template that exists in the user's account. For backwards-compatibility,
 	 *                                       the template name may also be used but the immutable slug is preferred.
-	 * @param   array    $template_content  an array of template content to send.  Each item in the array should be a struct with two keys - name:
+	 * @param   array    $template_content  an array of template content to send.  Each item in the array should be a object with two keys - name:
 	 *                                       the name of the content block to set the content for, and content: the actual content to put into the block
-	 *                                       - template_content[] struct the injection of a single piece of content into a single editable region
+	 *                                       - template_content[] object the injection of a single piece of content into a single editable region
 	 *                                       - name string the name of the mc:edit editable region to inject into
 	 *                                       - content string the content to inject
-	 * @param   struct   $message           the other information on the message to send - same as /messages/send, but without the html content
+	 * @param   object   $message           the other information on the message to send - same as /messages/send, but without the html content
 	 *                                       - html string optional full HTML content to be sent if not in template
 	 *                                       - text string optional full text content to be sent
 	 *                                       - subject string the message subject
 	 *                                       - from_email string the sender email address.
 	 *                                       - from_name string optional from name to be used
 	 *                                       - to array an array of recipient information.
-	 *                                       - to[] struct a single recipient's information.
+	 *                                       - to[] object a single recipient's information.
 	 *                                       - email string the email address of the recipient
 	 *                                       - name string the optional display name to use for the recipient
-	 *                                       - headers struct optional extra headers to add to the message (most headers are allowed)
+	 *                                       - headers object optional extra headers to add to the message (most headers are allowed)
 	 *                                       - important boolean whether or not this message is important, and should be delivered ahead of
 	 *                                       non-important messages
 	 *                                       - track_opens boolean whether or not to turn on open tracking for the message
@@ -167,15 +167,15 @@ class CmandrillMessages
 	 *                                       merge_vars or global_merge_vars are provided.
 	 *                                       - global_merge_vars array global merge variables to use for all recipients. You can override these per
 	 *                                       recipient.
-	 *                                       - global_merge_vars[] struct a single global merge variable
+	 *                                       - global_merge_vars[] object a single global merge variable
 	 *                                       - name string the global merge variable's name. Merge variable names are case-insensitive and may not
 	 *                                       start with _
 	 *                                       - content string the global merge variable's content
 	 *                                       - merge_vars array per-recipient merge variables, which override global merge variables with the same name.
-	 *                                       - merge_vars[] struct per-recipient merge variables
+	 *                                       - merge_vars[] object per-recipient merge variables
 	 *                                       - rcpt string the email address of the recipient that the merge variables should apply to
 	 *                                       - vars array the recipient's merge variables
-	 *                                       - vars[] struct a single merge variable
+	 *                                       - vars[] object a single merge variable
 	 *                                       - name string the merge variable's name. Merge variable names are case-insensitive and may not start with _
 	 *                                       - content string the merge variable's content
 	 *                                       - tags array an array of string to tag the message with.  Stats are accumulated using tags, though we
@@ -194,17 +194,17 @@ class CmandrillMessages
 	 *                                       searchable using the Mandrill search api.
 	 *                                       - recipient_metadata array Per-recipient metadata that will override the global values specified in the
 	 *                                       metadata parameter.
-	 *                                       - recipient_metadata[] struct metadata for a single recipient
+	 *                                       - recipient_metadata[] object metadata for a single recipient
 	 *                                       - rcpt string the email address of the recipient that the metadata is associated with
 	 *                                       - values array an associated array containing the recipient's unique metadata. If a key exists in both
 	 *                                       the per-recipient metadata and the global metadata, the per-recipient metadata will be used.
 	 *                                       - attachments array an array of supported attachments to add to the message
-	 *                                       - attachments[] struct a single supported attachment
+	 *                                       - attachments[] object a single supported attachment
 	 *                                       - type string the MIME type of the attachment
 	 *                                       - name string the file name of the attachment
 	 *                                       - content string the content of the attachment as a base64-encoded string
 	 *                                       - images array an array of embedded images to add to the message
-	 *                                       - images[] struct a single embedded image
+	 *                                       - images[] object a single embedded image
 	 *                                       - type string the MIME type of the image - must start with "image/"
 	 *                                       - name string the Content ID of the image - use <img src="cid:THIS_VALUE"> to reference the image in
 	 *                                       your HTML content
@@ -221,9 +221,9 @@ class CmandrillMessages
 	 *                                      in the past, the message will be sent immediately. An additional fee applies for scheduled email, and this
 	 *                                      feature is only available to accounts with a positive balance.
 	 *
-	 * @return array of structs for each recipient containing the key "email" with the email address and "status" as either "sent", "queued",
+	 * @return array of objects for each recipient containing the key "email" with the email address and "status" as either "sent", "queued",
 	 *      "scheduled", or "rejected"
-	 *     - return[] struct the sending results for a single recipient
+	 *     - return[] object the sending results for a single recipient
 	 *         - email string the email address of the recipient
 	 *         - status string the sending status of the recipient - either "sent", "queued", "rejected", or "invalid"
 	 *         - reject_reason string the reason for the rejection if the recipient status is "rejected"
@@ -254,8 +254,8 @@ class CmandrillMessages
 	 * @param   array    $api_keys   - an array of API keys to narrow the search to, will return messages sent by ANY of the keys
 	 * @param   integer  $limit      - the maximum number of results to return, defaults to 100, 1000 is the maximum
 	 *
-	 * @return array of structs for each matching message
-	 *     - return[] struct the information for a single matching message
+	 * @return array of objects for each matching message
+	 *     - return[] object the information for a single matching message
 	 *         - ts integer the Unix timestamp from when this message was sent
 	 *         - _id string the message's unique id
 	 *         - sender string the email address of the sender
@@ -266,23 +266,23 @@ class CmandrillMessages
 	 *             - tags[] string individual tag on this message
 	 *         - opens integer how many times has this message been opened
 	 *         - opens_detail array list of individual opens for the message
-	 *             - opens_detail[] struct information on an individual open
+	 *             - opens_detail[] object information on an individual open
 	 *                 - ts integer the unix timestamp from when the message was opened
 	 *                 - ip string the IP address that generated the open
 	 *                 - location string the approximate region and country that the opening IP is located
 	 *                 - ua string the email client or browser data of the open
 	 *         - clicks integer how many times has a link been clicked in this message
 	 *         - clicks_detail array list of individual clicks for the message
-	 *             - clicks_detail[] struct information on an individual click
+	 *             - clicks_detail[] object information on an individual click
 	 *                 - ts integer the unix timestamp from when the message was clicked
 	 *                 - url string the URL that was clicked on
 	 *                 - ip string the IP address that generated the click
 	 *                 - location string the approximate region and country that the clicking IP is located
 	 *                 - ua string the email client or browser data of the click
 	 *         - state string sending status of this message: sent, bounced, rejected
-	 *         - metadata struct any custom metadata provided when the message was sent
+	 *         - metadata object any custom metadata provided when the message was sent
 	 *     - smtp_events array a log of up to 3 smtp events for the message
-	 *         - smtp_events[] struct information about a specific smtp event
+	 *         - smtp_events[] object information about a specific smtp event
 	 *             - ts integer the Unix timestamp when the event occured
 	 *             - type string the message's state as a result of this event
 	 *             - diag string the SMTP response from the recipient's server
@@ -312,7 +312,7 @@ class CmandrillMessages
 	 * @param   array   $senders    - an array of sender addresses to narrow the search to, will return messages sent by ANY of the senders
 	 *
 	 * @return array the array of history information
-	 *     - return[] struct the stats for a single hour
+	 *     - return[] object the stats for a single hour
 	 *         - time string the hour as a UTC date string in YYYY-MM-DD HH:MM:SS format
 	 *         - sent integer the number of emails that were sent during the hour
 	 *         - hard_bounces integer the number of emails that hard bounced during the hour
@@ -337,7 +337,7 @@ class CmandrillMessages
 	 *
 	 * @param   string  $id  - the unique id of the message to get - passed as the "_id" field in webhooks, send calls, or search calls
 	 *
-	 * @return struct the information for the message
+	 * @return object the information for the message
 	 *     - ts integer the Unix timestamp from when this message was sent
 	 *     - _id string the message's unique id
 	 *     - sender string the email address of the sender
@@ -348,23 +348,23 @@ class CmandrillMessages
 	 *         - tags[] string individual tag on this message
 	 *     - opens integer how many times has this message been opened
 	 *     - opens_detail array list of individual opens for the message
-	 *         - opens_detail[] struct information on an individual open
+	 *         - opens_detail[] object information on an individual open
 	 *             - ts integer the unix timestamp from when the message was opened
 	 *             - ip string the IP address that generated the open
 	 *             - location string the approximate region and country that the opening IP is located
 	 *             - ua string the email client or browser data of the open
 	 *     - clicks integer how many times has a link been clicked in this message
 	 *     - clicks_detail array list of individual clicks for the message
-	 *         - clicks_detail[] struct information on an individual click
+	 *         - clicks_detail[] object information on an individual click
 	 *             - ts integer the unix timestamp from when the message was clicked
 	 *             - url string the URL that was clicked on
 	 *             - ip string the IP address that generated the click
 	 *             - location string the approximate region and country that the clicking IP is located
 	 *             - ua string the email client or browser data of the click
 	 *     - state string sending status of this message: sent, bounced, rejected
-	 *     - metadata struct any custom metadata provided when the message was sent
+	 *     - metadata object any custom metadata provided when the message was sent
 	 *     - smtp_events array a log of up to 3 smtp events for the message
-	 *         - smtp_events[] struct information about a specific smtp event
+	 *         - smtp_events[] object information about a specific smtp event
 	 *             - ts integer the Unix timestamp when the event occured
 	 *             - type string the message's state as a result of this event
 	 *             - diag string the SMTP response from the recipient's server
@@ -381,25 +381,25 @@ class CmandrillMessages
 	 *
 	 * @param   string  $raw_message  - the full MIME document of an email message
 	 *
-	 * @return struct the parsed message
+	 * @return object the parsed message
 	 *     - subject string the subject of the message
 	 *     - from_email string the email address of the sender
 	 *     - from_name string the alias of the sender (if any)
 	 *     - to array an array of any recipients in the message
-	 *         - to[] struct the information on a single recipient
+	 *         - to[] object the information on a single recipient
 	 *             - email string the email address of the recipient
 	 *             - name string the alias of the recipient (if any)
-	 *     - headers struct the key-value pairs of the MIME headers for the message's main document
+	 *     - headers object the key-value pairs of the MIME headers for the message's main document
 	 *     - text string the text part of the message, if any
 	 *     - html string the HTML part of the message, if any
 	 *     - attachments array an array of any attachments that can be found in the message
-	 *         - attachments[] struct information about an individual attachment
+	 *         - attachments[] object information about an individual attachment
 	 *             - name string the file name of the attachment
 	 *             - type string the MIME type of the attachment
 	 *             - binary boolean if this is set to true, the attachment is not pure-text, and the content will be base64 encoded
 	 *             - content string the content of the attachment as a text string or a base64 encoded string based on the attachment type
 	 *     - images array an array of any embedded images that can be found in the message
-	 *         - images[] struct information about an individual image
+	 *         - images[] object information about an individual image
 	 *             - name string the Content-ID of the embedded image
 	 *             - type string the MIME type of the image
 	 *             - content string the content of the image as a base64 encoded string
@@ -432,9 +432,9 @@ class CmandrillMessages
 	 *                                              a time in the past, the message will be sent immediately.
 	 * @param   string       $return_path_domain  - a custom domain to use for the messages's return-path
 	 *
-	 * @return array of structs for each recipient containing the key "email" with the email address and "status" as either "sent", "queued", or
+	 * @return array of objects for each recipient containing the key "email" with the email address and "status" as either "sent", "queued", or
 	 *      "rejected"
-	 *     - return[] struct the sending results for a single recipient
+	 *     - return[] object the sending results for a single recipient
 	 *         - email string the email address of the recipient
 	 *         - status string the sending status of the recipient - either "sent", "queued", "scheduled", "rejected", or "invalid"
 	 *         - reject_reason string the reason for the rejection if the recipient status is "rejected"
@@ -462,7 +462,7 @@ class CmandrillMessages
 	 * @param   string  $to  - an optional recipient address to restrict results to
 	 *
 	 * @return array a list of up to 1000 scheduled emails
-	 *     - return[] struct a scheduled email
+	 *     - return[] object a scheduled email
 	 *         - _id string the scheduled message id
 	 *         - created_at string the UTC timestamp when the message was created, in YYYY-MM-DD HH:MM:SS format
 	 *         - send_at string the UTC timestamp when the message will be sent, in YYYY-MM-DD HH:MM:SS format
@@ -482,7 +482,7 @@ class CmandrillMessages
 	 *
 	 * @param   string  $id  - a scheduled email id, as returned by any of the messages/send calls or messages/list-scheduled
 	 *
-	 * @return struct information about the scheduled email that was cancelled.
+	 * @return object information about the scheduled email that was cancelled.
 	 *     - _id string the scheduled message id
 	 *     - created_at string the UTC timestamp when the message was created, in YYYY-MM-DD HH:MM:SS format
 	 *     - send_at string the UTC timestamp when the message will be sent, in YYYY-MM-DD HH:MM:SS format
@@ -504,7 +504,7 @@ class CmandrillMessages
 	 * @param   string  $send_at  - the new UTC timestamp when the message should sent. Mandrill can't time travel, so if you specify a time in past
 	 *                              the message will be sent immediately
 	 *
-	 * @return struct information about the scheduled email that was rescheduled.
+	 * @return object information about the scheduled email that was rescheduled.
 	 *     - _id string the scheduled message id
 	 *     - created_at string the UTC timestamp when the message was created, in YYYY-MM-DD HH:MM:SS format
 	 *     - send_at string the UTC timestamp when the message will be sent, in YYYY-MM-DD HH:MM:SS format

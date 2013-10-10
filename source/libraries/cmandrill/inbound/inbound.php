@@ -30,7 +30,7 @@ class CmandrillInbound
 	 * List the domains that have been configured for inbound delivery
 	 * 
 	 * @return array the inbound domains associated with the account
-	 *     - return[] struct the individual domain info
+	 *     - return[] object the individual domain info
 	 *         - domain string the domain name that is accepting mail
 	 *         - created_at string the date and time that the inbound domain was added as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *         - valid_mx boolean true if this inbound domain has successfully set up an MX record to deliver mail to the Mandrill servers
@@ -48,7 +48,7 @@ class CmandrillInbound
 	 * @param   string  $domain  - the domain to check
 	 *
 	 * @return array the routes associated with the domain
-	 *     - return[] struct the individual mailbox route
+	 *     - return[] object the individual mailbox route
 	 *         - pattern string the search pattern that the mailbox name should match
 	 *         - url string the webhook URL where inbound messages will be published
 	 */
@@ -73,7 +73,7 @@ class CmandrillInbound
 	 * @param   string      $client_address  - the remote MTA's ip address. Optional; required for the SPF check.
 	 *
 	 * @return array an array of the information for each recipient in the message (usually one) that matched an inbound route
-	 *     - return[] struct the individual recipient information
+	 *     - return[] object the individual recipient information
 	 *         - email string the email address of the matching recipient
 	 *         - pattern string the mailbox route pattern that the recipient matched
 	 *         - url string the webhook URL that the message was posted to

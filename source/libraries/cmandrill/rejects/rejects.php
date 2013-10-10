@@ -38,7 +38,7 @@ class CmandrillRejects
 	 * @param   string  $comment     - an optional comment describing the rejection
 	 * @param   string  $subaccount  - an optional unique identifier for the subaccount to limit the blacklist entry
 	 *
-	 * @return struct a status object containing the address and the result of the operation
+	 * @return object a status object containing the address and the result of the operation
 	 *     - email string the email address you provided
 	 *     - added boolean whether the operation succeeded
 	 */
@@ -60,7 +60,7 @@ class CmandrillRejects
 	 * @param   string   $subaccount       - an optional unique identifier for the subaccount to limit the blacklist
 	 *
 	 * @return array Up to 1000 rejection entries
-	 *     - return[] struct the information for each rejection blacklist entry
+	 *     - return[] object the information for each rejection blacklist entry
 	 *         - email string the email that is blocked
 	 *         - reason string the type of event (hard-bounce, soft-bounce, spam, unsub) that caused this rejection
 	 *         - detail string extended details about the event, such as the SMTP diagnostic for bounces or the comment for manually-created rejections
@@ -68,7 +68,7 @@ class CmandrillRejects
 	 *         - last_event_at string the timestamp of the most recent event that either created or renewed this rejection
 	 *         - expires_at string when the blacklist entry will expire (this may be in the past)
 	 *         - expired boolean whether the blacklist entry has expired
-	 *         - sender struct the sender that this blacklist entry applies to, or null if none.
+	 *         - sender object the sender that this blacklist entry applies to, or null if none.
 	 *             - address string the sender's email address
 	 *             - created_at string the date and time that the sender was first seen by Mandrill as a UTC date string in YYYY-MM-DD HH:MM:SS format
 	 *             - sent integer the total number of messages sent by this sender
@@ -98,7 +98,7 @@ class CmandrillRejects
 	 * @param   string  $email       - an email address
 	 * @param   string  $subaccount  - an optional unique identifier for the subaccount to limit the blacklist deletion
 	 *
-	 * @return struct a status object containing the address and whether the deletion succeeded.
+	 * @return object a status object containing the address and whether the deletion succeeded.
 	 *     - email string the email address that was removed from the blacklist
 	 *     - deleted boolean whether the address was deleted successfully.
 	 *     - subaccount string the subaccount blacklist that the address was removed from, if any

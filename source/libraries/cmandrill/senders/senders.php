@@ -32,7 +32,7 @@ class CmandrillSenders
 	 * Return the senders that have tried to use this account.
 	 *
 	 * @return array an array of sender data, one for each sending addresses used by the account
-	 *     - return[] struct the information on each sending address in the account
+	 *     - return[] object the information on each sending address in the account
 	 *         - address string the sender's email address
 	 *         - created_at string the date and time that the sender was first seen by Mandrill as a UTC date string in YYYY-MM-DD HH:MM:SS format
 	 *         - sent integer the total number of messages sent by this sender
@@ -57,17 +57,17 @@ class CmandrillSenders
 	 * Returns the sender domains that have been added to this account.
 	 *
 	 * @return array an array of sender domain data, one for each sending domain used by the account
-	 *     - return[] struct the information on each sending domain for the account
+	 *     - return[] object the information on each sending domain for the account
 	 *         - domain string the sender domain name
 	 *         - created_at string the date and time that the sending domain was first seen as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *         - last_tested_at string when the domain's DNS settings were last tested as a UTC string in YYYY-MM-DD HH:MM:SS format
-	 *         - spf struct details about the domain's SPF record
+	 *         - spf object details about the domain's SPF record
 	 *             - valid boolean whether the domain's SPF record is valid for use with Mandrill
 	 *             - valid_after string when the domain's SPF record will be considered valid for use with Mandrill as a UTC string in
 	 *               YYYY-MM-DD HH:MM:SS format. If set, this indicates that the record is valid now, but was previously invalid, and Mandrill will
 	 *               wait until the record's TTL elapses to start using it.
 	 *             - error string an error describing the spf record, or null if the record is correct
-	 *         - dkim struct details about the domain's DKIM record
+	 *         - dkim object details about the domain's DKIM record
 	 *             - valid boolean whether the domain's DKIM record is valid for use with Mandrill
 	 *             - valid_after string when the domain's DKIM record will be considered valid for use with Mandrill as a UTC string in
 	 *               YYYY-MM-DD HH:MM:SS format. If set, this indicates that the record is valid now, but was previously invalid, and Mandrill will
@@ -91,17 +91,17 @@ class CmandrillSenders
 	 *
 	 * @param   string  $domain  - a domain name
 	 *
-	 * @return struct information about the domain
+	 * @return object information about the domain
 	 *     - domain string the sender domain name
 	 *     - created_at string the date and time that the sending domain was first seen as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *     - last_tested_at string when the domain's DNS settings were last tested as a UTC string in YYYY-MM-DD HH:MM:SS format
-	 *     - spf struct details about the domain's SPF record
+	 *     - spf object details about the domain's SPF record
 	 *         - valid boolean whether the domain's SPF record is valid for use with Mandrill
 	 *         - valid_after string when the domain's SPF record will be considered valid for use with Mandrill as a UTC string in
 	 *           YYYY-MM-DD HH:MM:SS format. If set, this indicates that the record is valid now, but was previously invalid, and Mandrill will
 	 *           wait until the record's TTL elapses to start using it.
 	 *         - error string an error describing the spf record, or null if the record is correct
-	 *     - dkim struct details about the domain's DKIM record
+	 *     - dkim object details about the domain's DKIM record
 	 *         - valid boolean whether the domain's DKIM record is valid for use with Mandrill
 	 *         - valid_after string when the domain's DKIM record will be considered valid for use with Mandrill as a UTC string in
 	 *           YYYY-MM-DD HH:MM:SS format. If set, this indicates that the record is valid now, but was previously invalid, and Mandrill will wait
@@ -125,17 +125,17 @@ class CmandrillSenders
 	 *
 	 * @param   string  $domain  - a domain name
 	 *
-	 * @return struct information about the sender domain
+	 * @return object information about the sender domain
 	 *     - domain string the sender domain name
 	 *     - created_at string the date and time that the sending domain was first seen as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *     - last_tested_at string when the domain's DNS settings were last tested as a UTC string in YYYY-MM-DD HH:MM:SS format
-	 *     - spf struct details about the domain's SPF record
+	 *     - spf object details about the domain's SPF record
 	 *         - valid boolean whether the domain's SPF record is valid for use with Mandrill
 	 *         - valid_after string when the domain's SPF record will be considered valid for use with Mandrill as a UTC string in
 	 *           YYYY-MM-DD HH:MM:SS format. If set, this indicates that the record is valid now, but was previously invalid, and Mandrill will wait
 	 *           until the record's TTL elapses to start using it.
 	 *         - error string an error describing the spf record, or null if the record is correct
-	 *     - dkim struct details about the domain's DKIM record
+	 *     - dkim object details about the domain's DKIM record
 	 *         - valid boolean whether the domain's DKIM record is valid for use with Mandrill
 	 *         - valid_after string when the domain's DKIM record will be considered valid for use with Mandrill as a UTC string in
 	 *           YYYY-MM-DD HH:MM:SS format. If set, this indicates that the record is valid now, but was previously invalid, and Mandrill will wait
@@ -163,7 +163,7 @@ class CmandrillSenders
 	 * @param   string  $domain   - a domain name at which you can receive email
 	 * @param   string  $mailbox  - a mailbox at the domain where the verification email should be sent
 	 *
-	 * @return struct information about the verification that was sent
+	 * @return object information about the verification that was sent
 	 *     - status string "sent" indicates that the verification has been sent, "already_verified" indicates that the domain has already been
 	 *       verified with your account
 	 *     - domain string the domain name you provided
@@ -181,7 +181,7 @@ class CmandrillSenders
 	 *
 	 * @param   string  $address  - the email address of the sender
 	 *
-	 * @return struct the detailed information on the sender
+	 * @return object the detailed information on the sender
 	 *     - address string the sender's email address
 	 *     - created_at string the date and time that the sender was first seen by Mandrill as a UTC date string in YYYY-MM-DD HH:MM:SS format
 	 *     - sent integer the total number of messages sent by this sender
@@ -192,8 +192,8 @@ class CmandrillSenders
 	 *     - unsubs integer the total number of unsubscribe requests received for messages by this sender
 	 *     - opens integer the total number of times messages by this sender have been opened
 	 *     - clicks integer the total number of times tracked URLs in messages by this sender have been clicked
-	 *     - stats struct an aggregate summary of the sender's sending stats
-	 *         - today struct stats for this sender so far today
+	 *     - stats object an aggregate summary of the sender's sending stats
+	 *         - today object stats for this sender so far today
 	 *             - sent integer the number of emails sent for this sender so far today
 	 *             - hard_bounces integer the number of emails hard bounced for this sender so far today
 	 *             - soft_bounces integer the number of emails soft bounced for this sender so far today
@@ -204,7 +204,7 @@ class CmandrillSenders
 	 *             - unique_opens integer the number of unique opens for emails sent for this sender so far today
 	 *             - clicks integer the number of URLs that have been clicked for this sender so far today
 	 *             - unique_clicks integer the number of unique clicks for emails sent for this sender so far today
-	 *         - last_7_days struct stats for this sender in the last 7 days
+	 *         - last_7_days object stats for this sender in the last 7 days
 	 *             - sent integer the number of emails sent for this sender in the last 7 days
 	 *             - hard_bounces integer the number of emails hard bounced for this sender in the last 7 days
 	 *             - soft_bounces integer the number of emails soft bounced for this sender in the last 7 days
@@ -215,7 +215,7 @@ class CmandrillSenders
 	 *             - unique_opens integer the number of unique opens for emails sent for this sender in the last 7 days
 	 *             - clicks integer the number of URLs that have been clicked for this sender in the last 7 days
 	 *             - unique_clicks integer the number of unique clicks for emails sent for this sender in the last 7 days
-	 *         - last_30_days struct stats for this sender in the last 30 days
+	 *         - last_30_days object stats for this sender in the last 30 days
 	 *             - sent integer the number of emails sent for this sender in the last 30 days
 	 *             - hard_bounces integer the number of emails hard bounced for this sender in the last 30 days
 	 *             - soft_bounces integer the number of emails soft bounced for this sender in the last 30 days
@@ -226,7 +226,7 @@ class CmandrillSenders
 	 *             - unique_opens integer the number of unique opens for emails sent for this sender in the last 30 days
 	 *             - clicks integer the number of URLs that have been clicked for this sender in the last 30 days
 	 *             - unique_clicks integer the number of unique clicks for emails sent for this sender in the last 30 days
-	 *         - last_60_days struct stats for this sender in the last 60 days
+	 *         - last_60_days object stats for this sender in the last 60 days
 	 *             - sent integer the number of emails sent for this sender in the last 60 days
 	 *             - hard_bounces integer the number of emails hard bounced for this sender in the last 60 days
 	 *             - soft_bounces integer the number of emails soft bounced for this sender in the last 60 days
@@ -237,7 +237,7 @@ class CmandrillSenders
 	 *             - unique_opens integer the number of unique opens for emails sent for this sender in the last 60 days
 	 *             - clicks integer the number of URLs that have been clicked for this sender in the last 60 days
 	 *             - unique_clicks integer the number of unique clicks for emails sent for this sender in the last 60 days
-	 *         - last_90_days struct stats for this sender in the last 90 days
+	 *         - last_90_days object stats for this sender in the last 90 days
 	 *             - sent integer the number of emails sent for this sender in the last 90 days
 	 *             - hard_bounces integer the number of emails hard bounced for this sender in the last 90 days
 	 *             - soft_bounces integer the number of emails soft bounced for this sender in the last 90 days
@@ -262,7 +262,7 @@ class CmandrillSenders
 	 * @param   string  $address  - the email address of the sender
 	 *
 	 * @return array the array of history information
-	 *     - return[] struct the stats for a single hour
+	 *     - return[] object the stats for a single hour
 	 *         - time string the hour as a UTC date string in YYYY-MM-DD HH:MM:SS format
 	 *         - sent integer the number of emails that were sent during the hour
 	 *         - hard_bounces integer the number of emails that hard bounced during the hour

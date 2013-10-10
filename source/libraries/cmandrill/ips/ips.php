@@ -29,17 +29,17 @@ class CmandrillIps
 	/**
 	 * Lists your dedicated IPs.
 	 *
-	 * @return array an array of structs for each dedicated IP
-	 *     - return[] struct information about a single dedicated IP
+	 * @return array an array of objects for each dedicated IP
+	 *     - return[] object information about a single dedicated IP
 	 *         - ip string the ip address
 	 *         - created_at string the date and time that the dedicated IP was created as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *         - pool string the name of the pool that this dedicated IP belongs to
 	 *         - domain string the domain name (reverse dns) of this dedicated IP
-	 *         - custom_dns struct information about the ip's custom dns, if it has been configured
+	 *         - custom_dns object information about the ip's custom dns, if it has been configured
 	 *             - enabled boolean a boolean indicating whether custom dns has been configured for this ip
 	 *             - valid boolean whether the ip's custom dns is currently valid
 	 *             - error string if the ip's custom dns is invalid, this will include details about the error
-	 *         - warmup struct information about the ip's warmup status
+	 *         - warmup object information about the ip's warmup status
 	 *             - warming_up boolean whether the ip is currently in warmup mode
 	 *             - start_at string the start time for the warmup process as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *             - end_at string the end date and time for the warmup process as a UTC string in YYYY-MM-DD HH:MM:SS format
@@ -56,16 +56,16 @@ class CmandrillIps
 	 *
 	 * @param   string  $ip  - a dedicated IP address
 	 *
-	 * @return struct Information about the dedicated ip
+	 * @return object Information about the dedicated ip
 	 *     - ip string the ip address
 	 *     - created_at string the date and time that the dedicated IP was created as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *     - pool string the name of the pool that this dedicated IP belongs to
 	 *     - domain string the domain name (reverse dns) of this dedicated IP
-	 *     - custom_dns struct information about the ip's custom dns, if it has been configured
+	 *     - custom_dns object information about the ip's custom dns, if it has been configured
 	 *         - enabled boolean a boolean indicating whether custom dns has been configured for this ip
 	 *         - valid boolean whether the ip's custom dns is currently valid
 	 *         - error string if the ip's custom dns is invalid, this will include details about the error
-	 *     - warmup struct information about the ip's warmup status
+	 *     - warmup object information about the ip's warmup status
 	 *         - warming_up boolean whether the ip is currently in warmup mode
 	 *         - start_at string the start time for the warmup process as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *         - end_at string the end date and time for the warmup process as a UTC string in YYYY-MM-DD HH:MM:SS format
@@ -85,7 +85,7 @@ class CmandrillIps
 	 * @param   boolean  $warmup  - whether to enable warmup mode for the ip
 	 * @param   string   $pool    - the id of the pool to add the dedicated ip to, or null to use your account's default pool
 	 *
-	 * @return struct a description of the provisioning request that was created
+	 * @return object a description of the provisioning request that was created
 	 *     - requested_at string the date and time that the request was created as a UTC timestamp in YYYY-MM-DD HH:MM:SS format
 	 */
 	public function provision($warmup = false, $pool = null)
@@ -103,16 +103,16 @@ class CmandrillIps
 	 *
 	 * @param   string  $ip  - a dedicated ip address
 	 *
-	 * @return struct Information about the dedicated IP
+	 * @return object Information about the dedicated IP
 	 *     - ip string the ip address
 	 *     - created_at string the date and time that the dedicated IP was created as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *     - pool string the name of the pool that this dedicated IP belongs to
 	 *     - domain string the domain name (reverse dns) of this dedicated IP
-	 *     - custom_dns struct information about the ip's custom dns, if it has been configured
+	 *     - custom_dns object information about the ip's custom dns, if it has been configured
 	 *         - enabled boolean a boolean indicating whether custom dns has been configured for this ip
 	 *         - valid boolean whether the ip's custom dns is currently valid
 	 *         - error string if the ip's custom dns is invalid, this will include details about the error
-	 *     - warmup struct information about the ip's warmup status
+	 *     - warmup object information about the ip's warmup status
 	 *         - warming_up boolean whether the ip is currently in warmup mode
 	 *         - start_at string the start time for the warmup process as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *         - end_at string the end date and time for the warmup process as a UTC string in YYYY-MM-DD HH:MM:SS format
@@ -129,16 +129,16 @@ class CmandrillIps
 	 *
 	 * @param   string  $ip  - a dedicated ip address
 	 *
-	 * @return struct Information about the dedicated IP
+	 * @return object Information about the dedicated IP
 	 *     - ip string the ip address
 	 *     - created_at string the date and time that the dedicated IP was created as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *     - pool string the name of the pool that this dedicated IP belongs to
 	 *     - domain string the domain name (reverse dns) of this dedicated IP
-	 *     - custom_dns struct information about the ip's custom dns, if it has been configured
+	 *     - custom_dns object information about the ip's custom dns, if it has been configured
 	 *         - enabled boolean a boolean indicating whether custom dns has been configured for this ip
 	 *         - valid boolean whether the ip's custom dns is currently valid
 	 *         - error string if the ip's custom dns is invalid, this will include details about the error
-	 *     - warmup struct information about the ip's warmup status
+	 *     - warmup object information about the ip's warmup status
 	 *         - warming_up boolean whether the ip is currently in warmup mode
 	 *         - start_at string the start time for the warmup process as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *         - end_at string the end date and time for the warmup process as a UTC string in YYYY-MM-DD HH:MM:SS format
@@ -158,16 +158,16 @@ class CmandrillIps
 	 * @param   boolean  $create_pool  - whether to create the pool if it does not exist; if false and the pool does not exist, an Unknown_Pool will
 	 *                                   be thrown.
 	 *
-	 * @return struct Information about the updated state of the dedicated IP
+	 * @return object Information about the updated state of the dedicated IP
 	 *     - ip string the ip address
 	 *     - created_at string the date and time that the dedicated IP was created as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *     - pool string the name of the pool that this dedicated IP belongs to
 	 *     - domain string the domain name (reverse dns) of this dedicated IP
-	 *     - custom_dns struct information about the ip's custom dns, if it has been configured
+	 *     - custom_dns object information about the ip's custom dns, if it has been configured
 	 *         - enabled boolean a boolean indicating whether custom dns has been configured for this ip
 	 *         - valid boolean whether the ip's custom dns is currently valid
 	 *         - error string if the ip's custom dns is invalid, this will include details about the error
-	 *     - warmup struct information about the ip's warmup status
+	 *     - warmup object information about the ip's warmup status
 	 *         - warming_up boolean whether the ip is currently in warmup mode
 	 *         - start_at string the start time for the warmup process as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *         - end_at string the end date and time for the warmup process as a UTC string in YYYY-MM-DD HH:MM:SS format
@@ -184,7 +184,7 @@ class CmandrillIps
 	 *
 	 * @param   string  $ip  - the dedicated ip to remove from your account
 	 *
-	 * @return struct a description of the ip that was removed from your account.
+	 * @return object a description of the ip that was removed from your account.
 	 *     - ip string the ip address
 	 *     - deleted string a boolean indicating whether the ip was successfully deleted
 	 */
@@ -199,20 +199,20 @@ class CmandrillIps
 	 * Lists your dedicated IP pools.
 	 *
 	 * @return array the dedicated IP pools for your account, up to a maximum of 1,000
-	 *     - return[] struct information about each dedicated IP pool
+	 *     - return[] object information about each dedicated IP pool
 	 *         - name string this pool's name
 	 *         - created_at string the date and time that this pool was created as a UTC timestamp in YYYY-MM-DD HH:MM:SS format
 	 *         - ips array the dedicated IPs in this pool
-	 *             - ips[] struct information about each dedicated IP
+	 *             - ips[] object information about each dedicated IP
 	 *                 - ip string the ip address
 	 *                 - created_at string the date and time that the dedicated IP was created as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *                 - pool string the name of the pool that this dedicated IP belongs to
 	 *                 - domain string the domain name (reverse dns) of this dedicated IP
-	 *                 - custom_dns struct information about the ip's custom dns, if it has been configured
+	 *                 - custom_dns object information about the ip's custom dns, if it has been configured
 	 *                     - enabled boolean a boolean indicating whether custom dns has been configured for this ip
 	 *                     - valid boolean whether the ip's custom dns is currently valid
 	 *                     - error string if the ip's custom dns is invalid, this will include details about the error
-	 *                 - warmup struct information about the ip's warmup status
+	 *                 - warmup object information about the ip's warmup status
 	 *                     - warming_up boolean whether the ip is currently in warmup mode
 	 *                     - start_at string the start time for the warmup process as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *                     - end_at string the end date and time for the warmup process as a UTC string in YYYY-MM-DD HH:MM:SS format
@@ -229,20 +229,20 @@ class CmandrillIps
 	 *
 	 * @param   string  $pool  - a pool name
 	 *
-	 * @return struct Information about the dedicated ip pool
+	 * @return object Information about the dedicated ip pool
 	 *     - name string this pool's name
 	 *     - created_at string the date and time that this pool was created as a UTC timestamp in YYYY-MM-DD HH:MM:SS format
 	 *     - ips array the dedicated IPs in this pool
-	 *         - ips[] struct information about each dedicated IP
+	 *         - ips[] object information about each dedicated IP
 	 *             - ip string the ip address
 	 *             - created_at string the date and time that the dedicated IP was created as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *             - pool string the name of the pool that this dedicated IP belongs to
 	 *             - domain string the domain name (reverse dns) of this dedicated IP
-	 *             - custom_dns struct information about the ip's custom dns, if it has been configured
+	 *             - custom_dns object information about the ip's custom dns, if it has been configured
 	 *                 - enabled boolean a boolean indicating whether custom dns has been configured for this ip
 	 *                 - valid boolean whether the ip's custom dns is currently valid
 	 *                 - error string if the ip's custom dns is invalid, this will include details about the error
-	 *             - warmup struct information about the ip's warmup status
+	 *             - warmup object information about the ip's warmup status
 	 *                 - warming_up boolean whether the ip is currently in warmup mode
 	 *                 - start_at string the start time for the warmup process as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *                 - end_at string the end date and time for the warmup process as a UTC string in YYYY-MM-DD HH:MM:SS format
@@ -260,20 +260,20 @@ class CmandrillIps
 	 *
 	 * @param   string  $pool  - the name of a pool to create
 	 *
-	 * @return struct Information about the dedicated ip pool
+	 * @return object Information about the dedicated ip pool
 	 *     - name string this pool's name
 	 *     - created_at string the date and time that this pool was created as a UTC timestamp in YYYY-MM-DD HH:MM:SS format
 	 *     - ips array the dedicated IPs in this pool
-	 *         - ips[] struct information about each dedicated IP
+	 *         - ips[] object information about each dedicated IP
 	 *             - ip string the ip address
 	 *             - created_at string the date and time that the dedicated IP was created as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *             - pool string the name of the pool that this dedicated IP belongs to
 	 *             - domain string the domain name (reverse dns) of this dedicated IP
-	 *             - custom_dns struct information about the ip's custom dns, if it has been configured
+	 *             - custom_dns object information about the ip's custom dns, if it has been configured
 	 *                 - enabled boolean a boolean indicating whether custom dns has been configured for this ip
 	 *                 - valid boolean whether the ip's custom dns is currently valid
 	 *                 - error string if the ip's custom dns is invalid, this will include details about the error
-	 *             - warmup struct information about the ip's warmup status
+	 *             - warmup object information about the ip's warmup status
 	 *                 - warming_up boolean whether the ip is currently in warmup mode
 	 *                 - start_at string the start time for the warmup process as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *                 - end_at string the end date and time for the warmup process as a UTC string in YYYY-MM-DD HH:MM:SS format
@@ -290,7 +290,7 @@ class CmandrillIps
 	 *
 	 * @param   string  $pool  - the name of the pool to delete
 	 *
-	 * @return struct information about the status of the pool that was deleted
+	 * @return object information about the status of the pool that was deleted
 	 *     - pool string the name of the pool
 	 *     - deleted boolean whether the pool was deleted
 	 */
@@ -308,7 +308,7 @@ class CmandrillIps
 	 * @param   string  $ip      - a dedicated ip address
 	 * @param   string  $domain  - the domain name to test
 	 *
-	 * @return struct validation results for the domain
+	 * @return object validation results for the domain
 	 *     - valid string whether the domain name has a correctly-configured A record pointing to the ip address
 	 *     - error string if valid is false, this will contain details about why the domain's A record is incorrect
 	 */
@@ -325,16 +325,16 @@ class CmandrillIps
 	 * @param   string  $ip      - a dedicated ip address
 	 * @param   string  $domain  - a domain name to set as the dedicated IP's custom dns name.
 	 *
-	 * @return struct information about the dedicated IP's new configuration
+	 * @return object information about the dedicated IP's new configuration
 	 *     - ip string the ip address
 	 *     - created_at string the date and time that the dedicated IP was created as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *     - pool string the name of the pool that this dedicated IP belongs to
 	 *     - domain string the domain name (reverse dns) of this dedicated IP
-	 *     - custom_dns struct information about the ip's custom dns, if it has been configured
+	 *     - custom_dns object information about the ip's custom dns, if it has been configured
 	 *         - enabled boolean a boolean indicating whether custom dns has been configured for this ip
 	 *         - valid boolean whether the ip's custom dns is currently valid
 	 *         - error string if the ip's custom dns is invalid, this will include details about the error
-	 *     - warmup struct information about the ip's warmup status
+	 *     - warmup object information about the ip's warmup status
 	 *         - warming_up boolean whether the ip is currently in warmup mode
 	 *         - start_at string the start time for the warmup process as a UTC string in YYYY-MM-DD HH:MM:SS format
 	 *         - end_at string the end date and time for the warmup process as a UTC string in YYYY-MM-DD HH:MM:SS format

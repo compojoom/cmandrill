@@ -34,7 +34,7 @@ class CmandrillSubaccounts
 	 * @param   string  $q  - an optional prefix to filter the subaccounts' ids and names
 	 *
 	 * @return array the subaccounts for the account, up to a maximum of 1,000
-	 *     - return[] struct the individual subaccount info
+	 *     - return[] object the individual subaccount info
 	 *         - id string a unique indentifier for the subaccount
 	 *         - name string an optional display name for the subaccount
 	 *         - custom_quota integer an optional manual hourly quota for the subaccount. If not specified, the hourly quota will be managed
@@ -63,7 +63,7 @@ class CmandrillSubaccounts
 	 * @param   integer  $custom_quota  - an optional manual hourly quota for the subaccount. If not specified, Mandrill will manage this based
 	 *                                     on reputation
 	 *
-	 * @return struct the information saved about the new subaccount
+	 * @return object the information saved about the new subaccount
 	 *     - id string a unique indentifier for the subaccount
 	 *     - name string an optional display name for the subaccount
 	 *     - custom_quota integer an optional manual hourly quota for the subaccount. If not specified, the hourly quota will be managed based
@@ -88,7 +88,7 @@ class CmandrillSubaccounts
 	 *
 	 * @param   string  $id  - the unique identifier of the subaccount to query
 	 *
-	 * @return struct the information about the subaccount
+	 * @return object the information about the subaccount
 	 *     - id string a unique indentifier for the subaccount
 	 *     - name string an optional display name for the subaccount
 	 *     - notes string optional extra text to associate with the subaccount
@@ -103,7 +103,7 @@ class CmandrillSubaccounts
 	 *     - sent_total integer the number of emails the subaccount has sent since it was created
 	 *     - sent_hourly integer the number of emails the subaccount has sent in the last hour
 	 *     - hourly_quota integer the current hourly quota for the subaccount, either manual or reputation-based
-	 *     - last_30_days struct stats for this subaccount in the last 30 days
+	 *     - last_30_days object stats for this subaccount in the last 30 days
 	 *         - sent integer the number of emails sent for this subaccount in the last 30 days
 	 *         - hard_bounces integer the number of emails hard bounced for this subaccount in the last 30 days
 	 *         - soft_bounces integer the number of emails soft bounced for this subaccount in the last 30 days
@@ -131,7 +131,7 @@ class CmandrillSubaccounts
 	 * @param   integer  $custom_quota  - an optional manual hourly quota for the subaccount. If not specified, Mandrill will manage this based
 	 *                                   on reputation
 	 *
-	 * @return struct the information for the updated subaccount
+	 * @return object the information for the updated subaccount
 	 *     - id string a unique indentifier for the subaccount
 	 *     - name string an optional display name for the subaccount
 	 *     - custom_quota integer an optional manual hourly quota for the subaccount. If not specified, the hourly quota will be managed based
@@ -157,7 +157,7 @@ class CmandrillSubaccounts
 	 *
 	 * @param   string  $id  - the unique identifier of the subaccount to delete
 	 *
-	 * @return struct the information for the deleted subaccount
+	 * @return object the information for the deleted subaccount
 	 *     - id string a unique indentifier for the subaccount
 	 *     - name string an optional display name for the subaccount
 	 *     - custom_quota integer an optional manual hourly quota for the subaccount. If not specified, the hourly quota will be managed based
@@ -183,7 +183,7 @@ class CmandrillSubaccounts
 	 *
 	 * @param   string  $id  - the unique identifier of the subaccount to pause
 	 *
-	 * @return struct the information for the paused subaccount
+	 * @return object the information for the paused subaccount
 	 *     - id string a unique indentifier for the subaccount
 	 *     - name string an optional display name for the subaccount
 	 *     - custom_quota integer an optional manual hourly quota for the subaccount. If not specified, the hourly quota will be managed based
@@ -208,7 +208,7 @@ class CmandrillSubaccounts
 	 *
 	 * @param   string  $id  - the unique identifier of the subaccount to resume
 	 *
-	 * @return struct the information for the resumed subaccount
+	 * @return object the information for the resumed subaccount
 	 *     - id string a unique indentifier for the subaccount
 	 *     - name string an optional display name for the subaccount
 	 *     - custom_quota integer an optional manual hourly quota for the subaccount. If not specified, the hourly quota will be managed based

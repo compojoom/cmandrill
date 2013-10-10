@@ -32,7 +32,7 @@ class CMandrillUrls
 	 * Get the 100 most clicked URLs
 	 *
 	 * @return array the 100 most clicked URLs and their stats
-	 *     - return[] struct the individual URL stats
+	 *     - return[] object the individual URL stats
 	 *         - url string the URL to be tracked
 	 *         - sent integer the number of emails that contained the URL
 	 *         - clicks integer the number of times the URL has been clicked from a tracked email
@@ -51,7 +51,7 @@ class CMandrillUrls
 	 * @param   string  $q  - a search query
 	 *
 	 * @return array the 100 most clicked URLs matching the search query
-	 *     - return[] struct the URL matching the query
+	 *     - return[] object the URL matching the query
 	 *         - url string the URL to be tracked
 	 *         - sent integer the number of emails that contained the URL
 	 *         - clicks integer the number of times the URL has been clicked from a tracked email
@@ -70,7 +70,7 @@ class CMandrillUrls
 	 * @param   string  $url  - an existing URL
 	 *
 	 * @return array the array of history information
-	 *     - return[] struct the information for a single hour
+	 *     - return[] object the information for a single hour
 	 *         - time string the hour as a UTC date string in YYYY-MM-DD HH:MM:SS format
 	 *         - sent integer the number of emails that were sent with the URL during the hour
 	 *         - clicks integer the number of times the URL was clicked during the hour
