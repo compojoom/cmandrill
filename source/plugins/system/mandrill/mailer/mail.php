@@ -28,7 +28,9 @@ defined('JPATH_BASE') or die();
 jimport('phpmailer.phpmailer');
 jimport('joomla.mail.helper');
 
-JLoader::discover('cmandrillHelper', JPATH_ADMINISTRATOR . '/components/com_cmandrill/helpers/');
+require_once JPATH_LIBRARIES . '/cmandrill/include.php';
+
+JLoader::discover('CmandrillHelper', JPATH_ADMINISTRATOR . '/components/com_cmandrill/helpers/');
 
 /**
  * Email Class.  Provides a common interface to send email from the Joomla! Platform
@@ -58,6 +60,8 @@ class JMail extends PHPMailer
 		$language->load('plg_system_mandrill.sys', JPATH_ADMINISTRATOR, 'en-GB', true);
 		$language->load('plg_system_mandrill.sys', JPATH_ADMINISTRATOR, $language->getDefault(), true);
 		$language->load('plg_system_mandrill.sys', JPATH_ADMINISTRATOR, null, true);
+
+		$this->mandrill = CmandrillHelperMandrill::initMandrill();
 
 		// Initialize the logger class
 		jimport('joomla.error.log');
@@ -564,7 +568,7 @@ class JMail extends PHPMailer
 	 */
 	private function isDailyQuotaExeeded()
 	{
-		$data = cmandrillHelperMandrill::send('users', 'info');
+		$data = $this->mandrill->users->info();
 
 		$dailyQuota = $data->hourly_quota * 24;
 
@@ -617,8 +621,7 @@ class JMail extends PHPMailer
 			}
 		}
 
-		$mandrill = new stdClass;
-		$mandrill->message = array(
+		$message = array(
 			'subject' => $this->Subject,
 			'from_email' => $this->From,
 			'from_name' => $this->FromName
@@ -626,7 +629,7 @@ class JMail extends PHPMailer
 
 		if (count($mAttachments))
 		{
-			$mandrill->message['attachments'] = $mAttachments;
+			$message['attachments'] = $mAttachments;
 		}
 
 		// Let us set some tags
@@ -634,37 +637,37 @@ class JMail extends PHPMailer
 
 		if ($input->get('option'))
 		{
-			$mandrill->message['tags'][] = 'component_' . $input->get('option');
+			$message['tags'][] = 'component_' . $input->get('option');
 		}
 
 		if ($input->get('view'))
 		{
-			$mandrill->message['tags'][] = 'view_' . $input->get('view');
+			$message['tags'][] = 'view_' . $input->get('view');
 		}
 
 		if ($input->get('task'))
 		{
-			$mandrill->message['tags'][] = 'task_' . $input->get('task');
+			$message['tags'][] = 'task_' . $input->get('task');
 		}
 
 		if (count($this->ReplyTo) > 0)
 		{
 			$replyTo = array_keys($this->ReplyTo);
-			$mandrill->message['headers'] = array('Reply-To' => $replyTo[0]);
+			$message['headers'] = array('Reply-To' => $replyTo[0]);
 		}
 
 		if ($this->ContentType == 'text/plain')
 		{
-			$mandrill->message['text'] = $this->Body;
+			$message['text'] = $this->Body;
 		}
 		else
 		{
-			$mandrill->message['html'] = $this->Body;
+			$message['html'] = $this->Body;
 			$message['auto_text'] = true;
 		}
 
-		$mandrill->message['track_opens'] = true;
-		$mandrill->message['track_clicks'] = true;
+		$message['track_opens'] = true;
+		$message['track_clicks'] = true;
 
 		$recipients = $this->to;
 
@@ -684,11 +687,10 @@ class JMail extends PHPMailer
 		}
 
 		// If we have a template, then use it!
-		$template = cmandrillHelperMandrill::getTemplate();
+		$templateName = cmandrillHelperMandrill::getTemplate();
 
-		if ($template)
+		if ($templateName)
 		{
-			$mandrill->template_name = $template;
 			$html = $this->Body;
 
 			// If we have a template, we need to send the mail in HTML format
@@ -704,13 +706,12 @@ class JMail extends PHPMailer
 				$html = cmandrillHelperUtility::makeClickableUrls($html);
 			}
 
-			$mandrill->template_content = array(
+			$templateContent = array(
 				array(
 					'name' => 'main_content',
 					'content' => $html
 				)
 			);
-			$action = 'send-template';
 		}
 
 		// If we have more than 1000 recipients, let us send this in chunks
@@ -719,9 +720,16 @@ class JMail extends PHPMailer
 
 		foreach ($to as $value)
 		{
-			$mandrill->message['to'] = $value;
+			$message['to'] = $value;
 
-			$data = cmandrillHelperMandrill::send('messages', $action, $mandrill, false);
+			if ($templateName)
+			{
+				$data = $this->mandrill->messages->sendTemplate($templateName, $templateContent, $message, false);
+			}
+			else
+			{
+				$data = $this->mandrill->messages->send($message, false);
+			}
 
 			// Check if we have have a correct response
 			if (is_array($data))

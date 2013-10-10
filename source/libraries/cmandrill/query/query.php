@@ -12,7 +12,7 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * Class Cmandrill
+ * Class CmandrillQuery
  *
  * @since  3.0
  */
@@ -22,7 +22,7 @@ class CmandrillQuery
 
 	public $ch;
 
-	public $root = 'https://mandrillapp.com/api/1.0';
+	public $root;
 
 	public $debug = false;
 
@@ -53,11 +53,14 @@ class CmandrillQuery
 	/**
 	 * The Constructor
 	 *
-	 * @param   string  $apikey  - the API key for Mandrill
+	 * @param   string  $apikey   - the API key for Mandrill
+	 * @param   array   $options  - config options
 	 *
 	 * @throws CMandrillExceptionsError
+	 * @internal param bool $ssl - true if we should use https uri
+	 *
 	 */
-	public function __construct($apikey = null)
+	public function __construct($apikey = null, $options = array('ssl' => true))
 	{
 		if (!$apikey)
 		{
@@ -85,7 +88,7 @@ class CmandrillQuery
 		curl_setopt($this->ch, CURLOPT_CONNECTTIMEOUT, 30);
 		curl_setopt($this->ch, CURLOPT_TIMEOUT, 600);
 
-		$this->root = rtrim($this->root, '/') . '/';
+		$this->root = $this->setRoot($options['ssl']);
 
 		$this->templates = new CmandrillTemplates($this);
 		$this->exports = new CmandrillExports($this);
@@ -163,7 +166,7 @@ class CmandrillQuery
 			throw new CMandrillExceptionsHttpError("API call to $url failed: " . curl_error($ch));
 		}
 
-		$result = json_decode($response_body, true);
+		$result = json_decode($response_body);
 
 		if ($result === null)
 		{
@@ -176,6 +179,27 @@ class CmandrillQuery
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Gets the API url
+	 *
+	 * @param   bool  $ssl  - should we use https address
+	 *
+	 * @return string
+	 */
+	private static function setRoot($ssl)
+	{
+		$scheme = 'http';
+
+		if ($ssl)
+		{
+			$scheme = 'https';
+		}
+
+		$url = $scheme . '://mandrillapp.com/api/1.0/';
+
+		return $url;
 	}
 
 	/**
