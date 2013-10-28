@@ -52,6 +52,14 @@ defined('_JEXEC') or die('Restricted access');
 							<div class="control-label"><?php echo $this->form->getLabel('task'); ?></div>
 							<div class="controls"><?php echo $this->form->getInput('task'); ?></div>
 						</div>
+						<div class="control-group">
+							<div class="control-label"><?php echo $this->form->getLabel('class_name'); ?></div>
+							<div class="controls"><?php echo $this->form->getInput('class_name'); ?></div>
+						</div>
+						<div class="control-group">
+							<div class="control-label"><?php echo $this->form->getLabel('function_name'); ?></div>
+							<div class="controls"><?php echo $this->form->getInput('function_name'); ?></div>
+						</div>
 					</div>
 				</fieldset>
 			</div>

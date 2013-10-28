@@ -10,9 +10,10 @@
 defined('_JEXEC') or die('Restricted access');
 
 JHtml::stylesheet('media/com_cmandrill/css/dashboard.css');
-$urls = cmandrillHelperMandrill::send('urls', 'list');
+$mandrill = CmandrillHelperMandrill::initMandrill();
+$urls = $mandrill->urls->getList();
 
-$info = cmandrillHelperMandrill::send('users', 'info');
+$info = $mandrill->users->info();
 
 $stats = $info->stats;
 $delivered7 = $stats->last_7_days->sent - $stats->last_7_days->hard_bounces - $stats->last_7_days->soft_bounces;

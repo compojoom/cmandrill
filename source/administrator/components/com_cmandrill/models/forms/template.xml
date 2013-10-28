@@ -45,17 +45,20 @@
 			   size="1" label="COM_CMANDRILL_FIELD_TEMPLATE"
 			   description="COM_CMANDRILL_FIELD_TEMPLATE_DESC" required="true" />
 
-		<field name="component" type="components" class="inputbox"
+		<field name="component" type="list" class="inputbox"
 			   size="1" label="COM_CMANDRILL_FIELD_COMPONENT"
-			   description="COM_CMANDRILL_FIELD_COMPONENT_DESC" required="true" />
+			   description="COM_CMANDRILL_FIELD_COMPONENT_DESC" required="true">
+			<option value="global">COM_CMANDRILL_GLOBAL</option>
+			<option value="other">COM_CMANDRILL_OTHER</option>
+		</field>
 
-		<field name="view" type="text" class="inputbox"
-			   size="40" label="COM_CMANDRILL_FIELD_VIEW"
-			   description="COM_CMANDRILL_FIELD_VIEW_DESC" />
+		<field name="class_name" type="text" class="inputbox"
+		       size="40" label="COM_CMANDRILL_FIELD_CLASS_NAME_LABEL"
+		       description="COM_CMANDRILL_FIELD_CLASS_NAME_DESC" />
 
-		<field name="task" type="text" class="inputbox"
-			   size="40" label="COM_CMANDRILL_FIELD_TASK"
-			   description="COM_CMANDRILL_FIELD_TASK_DESC" />
+		<field name="function_name" type="text" class="inputbox"
+		       size="40" label="COM_CMANDRILL_FIELD_FUNCTION_NAME_LABEL"
+		       description="COM_CMANDRILL_FIELD_FUNCTION_NAME_DESC" />
 
 	</fieldset>
 </form>

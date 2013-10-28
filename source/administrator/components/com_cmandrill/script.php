@@ -1,7 +1,7 @@
 <?php
 /**
- * @author Daniel Dimitrov - compojoom.com
- * @date: 14.01.13
+ * @author     Daniel Dimitrov <daniel@compojoom.com>
+ * @date       14.01.13
  *
  * @copyright  Copyright (C) 2008 - 2013 compojoom.com . All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
@@ -9,25 +9,31 @@
 
 defined('_JEXEC') or die('Restricted access');
 
-
+/**
+ * Class com_cmandrillInstallerScript
+ *
+ * @since  1.0
+ */
 class com_cmandrillInstallerScript extends CompojoomInstaller
 {
 	/*
 	 * The release value to be displayed and checked against throughout this file.
 	 */
 	public $release = '1.0';
+
 	public $minimum_joomla_release = '2.5.6';
+
 	public $extension = 'com_cmandrill';
+
 	private $type = '';
+
 	private $status = '';
 
 	private $installationQueue = array(
-		// modules => { (folder) => { (module) => { (position), (published) } }* }*
-		'modules' => array(
-
-		),
+		// Modules => { (folder) => { (module) => { (position), (published) } }* }*
+		'modules' => array(),
 		'plugins' => array(
-			//the plugin should be deactivated when installed because it shows a warning. The user needs to manually activate it
+			// The plugin should be deactivated when installed because it shows a warning. The user needs to manually activate it
 			'plg_system_mandrill' => 0
 		)
 	);
@@ -37,6 +43,7 @@ class com_cmandrillInstallerScript extends CompojoomInstaller
 	 * method to uninstall the component
 	 *
 	 * @param $parent
+	 *
 	 * @return void
 	 */
 	public function uninstall($parent)
@@ -55,15 +62,17 @@ class com_cmandrillInstallerScript extends CompojoomInstaller
 	 *
 	 * @param $type
 	 * @param $parent
+	 *
 	 * @return void
 	 */
 	public function postflight($type, $parent)
 	{
 		$this->loadLanguage();
-		$this->status = new stdClass();
+		$this->status = new stdClass;
 		$this->update = CmandrillInstallerHelper::checkIfUpdating();
 
-		switch ($this->update) {
+		switch ($this->update)
+		{
 			case 'plugin':
 				CmandrillInstallerHelper::updateFromOldPlugin();
 			case 'new':
@@ -71,7 +80,7 @@ class com_cmandrillInstallerScript extends CompojoomInstaller
 				break;
 		}
 
-		// let us install the modules
+		// Let us install the modules
 
 		$this->status->plugins = $this->installPlugins($this->installationQueue['plugins']);
 		$this->status->modules = $this->installModules($this->installationQueue['modules']);
@@ -89,11 +98,13 @@ class com_cmandrillInstallerScript extends CompojoomInstaller
 		$html[] = '</div>';
 
 
-		if ($this->status->plugins) {
+		if ($this->status->plugins)
+		{
 			$html[] = $this->renderPluginInfoInstall($this->status->plugins);
 		}
 
-		if ($this->status->modules) {
+		if ($this->status->modules)
+		{
 			$html[] = $this->renderModuleInfoInstall($this->status->modules);
 		}
 
@@ -102,14 +113,13 @@ class com_cmandrillInstallerScript extends CompojoomInstaller
 
 	public function displayInfoUninstallation()
 	{
-		$html[] = '<h2>'.  JText::_('COM_MANDRILL_UNINSTALL_SUCCESSFULL') . '</h2>';
+		$html[] = '<h2>' . JText::_('COM_MANDRILL_UNINSTALL_SUCCESSFULL') . '</h2>';
 
 		$html[] = $this->renderPluginInfoUninstall($this->status->plugins);
 		$html[] = $this->renderModuleInfoUninstall($this->status->modules);
 
 		return implode('', $html);
 	}
-
 }
 
 class CompojoomInstaller
@@ -131,27 +141,40 @@ class CompojoomInstaller
 	{
 		$src = $this->parent->getParent()->getPath('source');
 		$status = array();
+
 		// Modules installation
-		if (count($modulesToInstall)) {
-			foreach ($modulesToInstall as $folder => $modules) {
-				if (count($modules)) {
-					foreach ($modules as $module => $modulePreferences) {
+		if (count($modulesToInstall))
+		{
+			foreach ($modulesToInstall as $folder => $modules)
+			{
+				if (count($modules))
+				{
+					foreach ($modules as $module => $modulePreferences)
+					{
 						// Install the module
-						if (empty($folder)) {
+						if (empty($folder))
+						{
 							$folder = 'site';
 						}
+
 						$path = "$src/modules/$module";
-						if ($folder == 'admin') {
+
+						if ($folder == 'admin')
+						{
 							$path = "$src/administrator/modules/$module";
 						}
-						if (!is_dir($path)) {
+
+						if (!is_dir($path))
+						{
 							continue;
 						}
+
 						$db = JFactory::getDbo();
+
 						// Was the module alrady installed?
 						$query = $db->getQuery('true');
 						$query->select('COUNT(*)')->from($db->qn('#__modules'))
-							->where($db->qn('module').'='.$db->q($module));
+							->where($db->qn('module') . '=' . $db->q($module));
 						$db->setQuery($query);
 
 						$count = $db->loadResult();
@@ -159,63 +182,77 @@ class CompojoomInstaller
 						$installer = new JInstaller;
 						$result = $installer->install($path);
 						$status[] = array('name' => $module, 'client' => $folder, 'result' => $result);
+
 						// Modify where it's published and its published state
-						if (!$count) {
+						if (!$count)
+						{
 							list($modulePosition, $modulePublished) = $modulePreferences;
 							$query->clear();
-							$query->update($db->qn('#__modules'))->set($db->qn('position').'='.$db->q($modulePosition));
-							if ($modulePublished) {
-								$query->set($db->qn('published').'='.$db->q(1));
+							$query->update($db->qn('#__modules'))->set($db->qn('position') . '=' . $db->q($modulePosition));
+
+							if ($modulePublished)
+							{
+								$query->set($db->qn('published') . '=' . $db->q(1));
 							}
-							$query->set($db->qn('params').'='.$db->q($installer->getParams()));
-							$query->where($db->qn('module').'='.$db->q($module));
+
+							$query->set($db->qn('params') . '=' . $db->q($installer->getParams()));
+							$query->where($db->qn('module') . '=' . $db->q($module));
 							$db->setQuery($query);
 							$db->query();
 						}
-//	                    get module id
+
+						// Get module id
 						$query->clear();
 						$query->select('id')->from($db->qn('#__modules'))
-							->where($db->qn('module').'='.$db->q($module));
+							->where($db->qn('module') . '=' . $db->q($module));
 						$db->setQuery($query);
 
 						$moduleId = $db->loadObject()->id;
 
 						$query->clear();
 						$query->select('COUNT(*) as count')->from($db->qn('#__modules_menu'))
-							->where($db->qn('moduleid').'='.$db->q($moduleId));
+							->where($db->qn('moduleid') . '=' . $db->q($moduleId));
 
 						$db->setQuery($query);
 
-						if(!$db->loadObject()->count) {
-							// insert the module on all pages, otherwise we can't use it
+						if (!$db->loadObject()->count)
+						{
+							// Insert the module on all pages, otherwise we can't use it
 							$query->clear();
-							$query->insert($db->qn('#__modules_menu'))->columns($db->qn('moduleid').','.$db->qn('menuid'))->values($db->q($moduleId) . ' , ' . $db->q('0'));
+							$query->insert($db->qn('#__modules_menu'))->columns($db->qn('moduleid') . ',' . $db->qn('menuid'))->values($db->q($moduleId) . ' , ' . $db->q('0'));
 							$db->setQuery($query);
-							$db->query();
+							$db->execute();
 						}
 					}
 				}
 			}
 		}
+
 		return $status;
 	}
 
 	public function uninstallModules($modulesToUninstall = array())
 	{
 		$status = array();
-		if (count($modulesToUninstall)) {
-			$db = JFactory::getDbo();
-			foreach ($modulesToUninstall as $folder => $modules) {
-				if (count($modules)) {
 
-					foreach ($modules as $module => $modulePreferences) {
+		if (count($modulesToUninstall))
+		{
+			$db = JFactory::getDbo();
+
+			foreach ($modulesToUninstall as $folder => $modules)
+			{
+				if (count($modules))
+				{
+					foreach ($modules as $module => $modulePreferences)
+					{
 						// Find the module ID
 						$query = $db->getQuery(true);
-						$query->select('extension_id')->from('#__extensions')->where($db->qn('element').'='.$db->q($module))
-							->where($db->qn('type') . '='.$db->q('module'));
+						$query->select('extension_id')->from('#__extensions')->where($db->qn('element') . '=' . $db->q($module))
+							->where($db->qn('type') . '=' . $db->q('module'));
 						$db->setQuery($query);
 
 						$id = $db->loadResult();
+
 						// Uninstall the module
 						$installer = new JInstaller;
 						$result = $installer->uninstall('module', $id, 1);
@@ -224,6 +261,7 @@ class CompojoomInstaller
 				}
 			}
 		}
+
 		return $status;
 	}
 
@@ -234,7 +272,8 @@ class CompojoomInstaller
 		$db = JFactory::getDbo();
 		$status = array();
 
-		foreach ($plugins as $plugin => $published) {
+		foreach ($plugins as $plugin => $published)
+		{
 			$parts = explode('_', $plugin);
 			$pluginType = $parts[1];
 			$pluginName = $parts[2];
@@ -244,7 +283,7 @@ class CompojoomInstaller
 			$query = $db->getQuery(true);
 			$query->select('COUNT(*)')
 				->from('#__extensions')
-				->where($db->qn('element') . '=' .$db->q($pluginName))
+				->where($db->qn('element') . '=' . $db->q($pluginName))
 				->where($db->qn('folder') . '=' . $db->q($pluginType));
 
 			$db->setQuery($query);
@@ -254,12 +293,13 @@ class CompojoomInstaller
 			$result = $installer->install($path);
 			$status[] = array('name' => $plugin, 'group' => $pluginType, 'result' => $result);
 
-			if ($published && !$count) {
+			if ($published && !$count)
+			{
 				$query->clear();
 				$query->update('#__extensions')
-					->set($db->qn('enabled').'='.$db->q(1))
-					->where($db->qn('element').'='.$db->q($pluginName))
-					->where($db->qn('folder'). '='.$db->q($pluginType));
+					->set($db->qn('enabled') . '=' . $db->q(1))
+					->where($db->qn('element') . '=' . $db->q($pluginName))
+					->where($db->qn('folder') . '=' . $db->q($pluginType));
 				$db->setQuery($query);
 				$db->query();
 			}
@@ -274,20 +314,22 @@ class CompojoomInstaller
 		$query = $db->getQuery(true);
 		$status = array();
 
-		foreach ($plugins as $plugin => $published) {
+		foreach ($plugins as $plugin => $published)
+		{
 			$parts = explode('_', $plugin);
 			$pluginType = $parts[1];
 			$pluginName = $parts[2];
 			$query->clear();
 			$query->select('extension_id')->from($db->qn('#__extensions'))
-				->where($db->qn('type').'='.$db->q('plugin'))
-				->where($db->qn('element').'='.$db->q($pluginName))
-				->where($db->qn('folder').'='.$db->q($pluginType));
+				->where($db->qn('type') . '=' . $db->q('plugin'))
+				->where($db->qn('element') . '=' . $db->q($pluginName))
+				->where($db->qn('folder') . '=' . $db->q($pluginType));
 			$db->setQuery($query);
 
 			$id = $db->loadResult();
 
-			if ($id) {
+			if ($id)
+			{
 				$installer = new JInstaller;
 				$result = $installer->uninstall('plugin', $id, 1);
 				$status[] = array('name' => $plugin, 'group' => $pluginType, 'result' => $result);
@@ -306,33 +348,40 @@ class CompojoomInstaller
 		$query = $db->getQuery('true');
 		$query->select($db->qn('manifest_cache'))
 			->from($db->qn('#__extensions'))
-			->where($db->qn('name').'='.$db->q($this->extension));
+			->where($db->qn('name') . '=' . $db->q($this->extension));
 		$manifest = json_decode($db->loadResult(), true);
+
 		return $manifest[$name];
 	}
 
-	public function renderModuleInfoInstall($modules) {
+	public function renderModuleInfoInstall($modules)
+	{
 		$rows = 0;
 
 		$html = array();
-		if (count($modules)) {
+
+		if (count($modules))
+		{
 			$html[] = '<table class="table">';
 			$html[] = '<tr>';
-			$html[] = '<th>' . JText::_(strtoupper($this->extension) .'_MODULE') . '</th>';
-			$html[] = '<th>' . JText::_(strtoupper($this->extension) .'_CLIENT') . '</th>';
-			$html[] = '<th>' . JText::_(strtoupper($this->extension) .'_STATUS') . '</th>';
+			$html[] = '<th>' . JText::_(strtoupper($this->extension) . '_MODULE') . '</th>';
+			$html[] = '<th>' . JText::_(strtoupper($this->extension) . '_CLIENT') . '</th>';
+			$html[] = '<th>' . JText::_(strtoupper($this->extension) . '_STATUS') . '</th>';
 			$html[] = '</tr>';
-			foreach ($modules as $module) {
+
+			foreach ($modules as $module)
+			{
 				$html[] = '<tr class="row' . (++$rows % 2) . '">';
 				$html[] = '<td class="key">' . $module['name'] . '</td>';
 				$html[] = '<td class="key">' . ucfirst($module['client']) . '</td>';
 				$html[] = '<td>';
 				$html[] = '<span style="color:' . (($module['result']) ? 'green' : 'red') . '; font-weight: bold;">';
-				$html[] = ($module['result']) ? JText::_(strtoupper($this->extension) .'_MODULE_INSTALLED') : JText::_(strtoupper($this->extension) .'_MODULE_NOT_INSTALLED');
+				$html[] = ($module['result']) ? JText::_(strtoupper($this->extension) . '_MODULE_INSTALLED') : JText::_(strtoupper($this->extension) . '_MODULE_NOT_INSTALLED');
 				$html[] = '</span>';
 				$html[] = '</td>';
 				$html[] = '</tr>';
 			}
+
 			$html[] = '</table>';
 		}
 
@@ -344,14 +393,18 @@ class CompojoomInstaller
 	{
 		$rows = 0;
 		$html = array();
-		if (count($modules)) {
+
+		if (count($modules))
+		{
 			$html[] = '<table class="table">';
 			$html[] = '<tr>';
 			$html[] = '<th>' . JText::_(strtoupper($this->extension) . '_MODULE') . '</th>';
 			$html[] = '<th>' . JText::_(strtoupper($this->extension) . '_CLIENT') . '</th>';
 			$html[] = '<th>' . JText::_(strtoupper($this->extension) . '_STATUS') . '</th>';
 			$html[] = '</tr>';
-			foreach ($modules as $module) {
+
+			foreach ($modules as $module)
+			{
 				$html[] = '<tr class="row' . (++$rows % 2) . '">';
 				$html[] = '<td class="key">' . $module['name'] . '</td>';
 				$html[] = '<td class="key">' . ucfirst($module['client']) . '</td>';
@@ -362,6 +415,7 @@ class CompojoomInstaller
 				$html[] = '</td>';
 				$html[] = '</tr>';
 			}
+
 			$html[] = '</table>';
 		}
 
@@ -372,13 +426,17 @@ class CompojoomInstaller
 	{
 		$rows = 0;
 		$html[] = '<table class="table">';
-		if (count($plugins)) {
+
+		if (count($plugins))
+		{
 			$html[] = '<tr>';
 			$html[] = '<th>' . JText::_(strtoupper($this->extension) . '_PLUGIN') . '</th>';
 			$html[] = '<th>' . JText::_(strtoupper($this->extension) . '_GROUP') . '</th>';
 			$html[] = '<th>' . JText::_(strtoupper($this->extension) . '_STATUS') . '</th>';
 			$html[] = '</tr>';
-			foreach ($plugins as $plugin) {
+
+			foreach ($plugins as $plugin)
+			{
 				$html[] = '<tr class="row' . (++$rows % 2) . '">';
 				$html[] = '<td class="key">' . $plugin['name'] . '</td>';
 				$html[] = '<td class="key">' . ucfirst($plugin['group']) . '</td>';
@@ -390,6 +448,7 @@ class CompojoomInstaller
 				$html[] = '</tr>';
 			}
 		}
+
 		$html[] = '</table>';
 
 		return implode('', $html);
@@ -399,7 +458,9 @@ class CompojoomInstaller
 	{
 		$rows = 0;
 		$html = array();
-		if (count($plugins)) {
+
+		if (count($plugins))
+		{
 			$html[] = '<table class="table">';
 			$html[] = '<tbody>';
 			$html[] = '<tr>';
@@ -407,7 +468,9 @@ class CompojoomInstaller
 			$html[] = '<th>Group</th>';
 			$html[] = '<th></th>';
 			$html[] = '</tr>';
-			foreach ($plugins as $plugin) {
+
+			foreach ($plugins as $plugin)
+			{
 				$html[] = '<tr class="row' . (++$rows % 2) . '">';
 				$html[] = '<td class="key">' . $plugin['name'] . '</td>';
 				$html[] = '<td class="key">' . ucfirst($plugin['group']) . '</td>';
@@ -418,6 +481,7 @@ class CompojoomInstaller
 				$html[] = '</td>';
 				$html[] = ' </tr> ';
 			}
+
 			$html[] = '</tbody > ';
 			$html[] = '</table > ';
 		}
@@ -430,11 +494,12 @@ class CompojoomInstaller
 	 *
 	 * @param $type
 	 * @param $parent
+	 *
 	 * @return void
 	 */
 	public function preflight($type, $parent)
 	{
-		$jversion = new JVersion();
+		$jversion = new JVersion;
 		$appl = JFactory::getApplication();
 
 		// Extract the version number from the manifest file
@@ -443,19 +508,28 @@ class CompojoomInstaller
 		// Find mimimum required joomla version from the manifest file
 		$this->minimum_joomla_release = $parent->get("manifest")->attributes()->version;
 
-		if (version_compare($jversion->getShortVersion(), $this->minimum_joomla_release, 'lt')) {
-			$appl->enqueueMessage('Cannot install ' . $this->extension . ' in a Joomla release prior to '
-				. $this->minimum_joomla_release, 'warning');
+		if (version_compare($jversion->getShortVersion(), $this->minimum_joomla_release, 'lt'))
+		{
+			$appl->enqueueMessage(
+				'Cannot install ' . $this->extension . ' in a Joomla release prior to '
+				. $this->minimum_joomla_release, 'warning'
+			);
+
 			return false;
 		}
 
-		// abort if the component being installed is not newer than the currently installed version
-		if ($type == 'update') {
+		// Abort if the component being installed is not newer than the currently installed version
+		if ($type == 'update')
+		{
 			$oldRelease = $this->getParam('version');
 			$rel = $oldRelease . ' to ' . $this->release;
-			if (!strstr($this->release, 'git_')) {
-				if (version_compare($this->release, $oldRelease, 'lt')) {
+
+			if (!strstr($this->release, 'git_'))
+			{
+				if (version_compare($this->release, $oldRelease, 'lt'))
+				{
 					$appl->enqueueMessage('Incorrect version sequence. Cannot upgrade ' . $rel, 'warning');
+
 					return false;
 				}
 			}
@@ -467,6 +541,7 @@ class CompojoomInstaller
 	 * method to update the component
 	 *
 	 * @param $parent
+	 *
 	 * @return void
 	 */
 	public function update($parent)
@@ -478,6 +553,7 @@ class CompojoomInstaller
 	 * method to install the component
 	 *
 	 * @param $parent
+	 *
 	 * @return void
 	 */
 	public function install($parent)
@@ -488,28 +564,32 @@ class CompojoomInstaller
 
 }
 
-class CmandrillInstallerHelper {
-	public static function checkIfUpdating(){
+class CmandrillInstallerHelper
+{
+	public static function checkIfUpdating()
+	{
 		jimport('joomla.plugin.plugin');
 		$update = 'new';
 		$plugin = JPluginHelper::getPlugin('system', 'mandrill');
 
 		// if the mandrill plugin is there let us have a look at the manifest cache
 		// to determine if it is from a version that needs updating
-		if(is_object($plugin)) {
+		if (is_object($plugin))
+		{
 			$db = JFactory::getDbo();
 			$query = $db->getQuery(true);
 
 			$query->select('manifest_cache')
 				->from('#__extensions')
 				->where('type =' . $db->Quote('plugin'))
-				->where('folder='.$db->q('system'))
-				->where('element='.$db->q('mandrill'));
+				->where('folder=' . $db->q('system'))
+				->where('element=' . $db->q('mandrill'));
 
-			$db->setQuery($query,0,1);
+			$db->setQuery($query, 0, 1);
 			$params = new JRegistry($db->loadObject()->manifest_cache);
 
-			if(version_compare($params->get('version'),'1.0.2', 'le')) {
+			if (version_compare($params->get('version'), '1.0.2', 'le'))
+			{
 				$update = 'plugin';
 			}
 		}
@@ -526,33 +606,36 @@ class CmandrillInstallerHelper {
 	 * that is why if we are updating from a version previous to 1.0.1 we will
 	 * copy the settings over to the component and will delete the settings for the plugin
 	 */
-	public static function updateFromOldPlugin() {
+	public static function updateFromOldPlugin()
+	{
 		$db = JFactory::getDbo();
 		$query = $db->getQuery(true);
 		$query->select('params')
 			->from('#__extensions')
 			->where('type =' . $db->q('plugin'))
-			->where('folder='.$db->q('system'))
-			->where('element='.$db->q('mandrill'));
+			->where('folder=' . $db->q('system'))
+			->where('element=' . $db->q('mandrill'));
 
-		$db->setQuery($query,0,1);
+		$db->setQuery($query, 0, 1);
 		$params = new JRegistry($db->loadObject()->params);
 
 		//update the component params if we have an api key
-		if($params->get('apiKey')) {
+		if ($params->get('apiKey'))
+		{
 			$query->clear();
-			$query->update('#__extensions')->set('params = '.$db->q(($params->toString())))
-				->where('type='.$db->q('component'))
-				->where('element='.$db->q('com_cmandrill'));
+			$query->update('#__extensions')->set('params = ' . $db->q(($params->toString())))
+				->where('type=' . $db->q('component'))
+				->where('element=' . $db->q('com_cmandrill'));
 
 			$db->setQuery($query);
-			if($db->execute()) {
+			if ($db->execute())
+			{
 				// ok we've copied the plugin params. Now let us clear the plugin params
 				$query->clear();
 				$query->update('#__extensions')->set('params = ' . $db->q(''))
 					->where('type =' . $db->q('plugin'))
-					->where('folder='.$db->q('system'))
-					->where('element='.$db->q('mandrill'));
+					->where('folder=' . $db->q('system'))
+					->where('element=' . $db->q('mandrill'));
 				$db->setQuery($query);
 				$db->execute();
 

@@ -632,23 +632,35 @@ class JMail extends PHPMailer
 			$message['attachments'] = $mAttachments;
 		}
 
+		$who = CmandrillHelperMandrill::whoIsSendingIt();
+
+		if (isset($who['class']))
+		{
+			$message['tags'][] = 'class_' . $who['class'];
+		}
+
+		if (isset($who['function']))
+		{
+			$message['tags'][] = 'function_' . $who['function'];
+		}
+
 		// Let us set some tags
-		$input = JFactory::getApplication()->input;
-
-		if ($input->get('option'))
-		{
-			$message['tags'][] = 'component_' . $input->get('option');
-		}
-
-		if ($input->get('view'))
-		{
-			$message['tags'][] = 'view_' . $input->get('view');
-		}
-
-		if ($input->get('task'))
-		{
-			$message['tags'][] = 'task_' . $input->get('task');
-		}
+//		$input = JFactory::getApplication()->input;
+//
+//		if ($input->get('option'))
+//		{
+//			$message['tags'][] = 'component_' . $input->get('option');
+//		}
+//
+//		if ($input->get('view'))
+//		{
+//			$message['tags'][] = 'view_' . $input->get('view');
+//		}
+//
+//		if ($input->get('task'))
+//		{
+//			$message['tags'][] = 'task_' . $input->get('task');
+//		}
 
 		if (count($this->ReplyTo) > 0)
 		{

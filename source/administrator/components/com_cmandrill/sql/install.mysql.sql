@@ -6,12 +6,10 @@ CREATE TABLE IF NOT EXISTS `#__cmandrill_templates` (
   `publish_down` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `template` varchar(255) NOT NULL,
   `component` varchar(255) NOT NULL,
-  `view` varchar(255) NOT NULL,
-  `task` varchar(255) NOT NULL,
   `created_by` int(11) NOT NULL,
   `created` datetime NOT NULL,
+  `class_name` varchar(255) NOT NULL,
+  `function_name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `component` (`component`),
-  KEY `view` (`view`),
-  KEY `task` (`task`)
-) DEFAULT CHARSET=utf8 ;
+  KEY `component` (`component`)
+) DEFAULT CHARSET=utf8;
