@@ -1,20 +1,14 @@
 <?php
 /**
- * @package    com_cmandrill
+ * @package    Com_Cmandrill
  * @author     DanielDimitrov <daniel@compojoom.com>
- * @date       02.10.13
+ * @date       02.11.13
  *
  * @copyright  Copyright (C) 2008 - 2013 compojoom.com . All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
 
-defined('_JEXEC') or die('Restricted access');
-
-/**
- * Class CMandrillError
- *
- * @since  3.0
- */
-class CMandrillExceptionsError extends Exception
-{
-}
+// Path are relative from source directory of the current project
+$symlinks = array(
+	'/../../lib_cmandrill/source' => ''
+);

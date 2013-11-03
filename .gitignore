@@ -3,3 +3,5 @@
 /packages
 /builds/build.properties
 *.xml~
+
+/vendors

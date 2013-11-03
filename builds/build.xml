@@ -10,13 +10,13 @@
 <project name="com_cmandrill" default="buildZip">
     <property file="./build.properties"/>
 
-    <taskdef name="extfile" classname="phingext.listJPackageFilesTask"/>
-    <taskdef name="gitversion" classname="phingext.GitVersionTask"/>
-    <taskdef name="explode" classname="phingext.explodeTask"/>
-    <taskdef name="indexhtml" classname="phingext.indexHtmlTask"/>
+	<taskdef name="extfile" classname="phingext.listJPackageFilesTask" classpath="../../buildtools"/>
+	<taskdef name="gitversion" classname="phingext.GitVersionTask"  classpath="../../buildtools"/>
+	<taskdef name="explode" classname="phingext.explodeTask"  classpath="../../buildtools"/>
 
-    <import file="plugin.xml" optional="true"/>
-    <import file="module.xml" optional="true"/>
+    <import file="../../buildtools/helper.xml" optional="true"/>
+    <import file="../../buildtools/plugin.xml" optional="true"/>
+    <import file="../../buildtools/module.xml" optional="true"/>
 
     <target name="setup-properties">
         <!-- Initialize the version if it's not set -->
@@ -157,9 +157,6 @@
                 <foreach list="${modules}" param="module" target="buildModule"/>
             </then>
         </if>
-
-        <echo message="Now add the index.html files!"/>
-        <indexhtml dir="${destination.dir}"/>
 
         <extfile file="${destination.dir}/${component.name}.xml"
                  sourceDir="${dirs.source}"
