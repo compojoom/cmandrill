@@ -10,5 +10,5 @@
 
 // Path are relative from source directory of the current project
 $symlinks = array(
-	'/../../lib_cmandrill/source' => ''
+	'/../../lib_cmandrill/source/libraries' => '/libraries'
 );

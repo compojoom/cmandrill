@@ -5,3 +5,5 @@
 *.xml~
 
 /vendors
+
+/source/libraries/cmandrill
