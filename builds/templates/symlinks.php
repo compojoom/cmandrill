@@ -10,5 +10,8 @@
 
 // Path are relative from source directory of the current project
 $symlinks = array(
-	'/../../lib_cmandrill/source/libraries' => '/libraries'
+	'/../../lib_cmandrill/source/libraries' => '/libraries',
+	'/../../lib_compojoom/source/libraries' => '/libraries',
+	'/../../lib_compojoom/source/language' => '/language',
+	'/../../lib_compojoom/source/media' => '/media'
 );

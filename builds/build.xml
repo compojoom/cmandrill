@@ -17,6 +17,7 @@
     <import file="../../buildtools/helper.xml" optional="true"/>
     <import file="../../buildtools/plugin.xml" optional="true"/>
     <import file="../../buildtools/module.xml" optional="true"/>
+    <import file="../../buildtools/library.xml" optional="true"/>
 
     <target name="setup-properties">
         <!-- Initialize the version if it's not set -->
@@ -54,7 +55,6 @@
 
     <target name="buildZip" depends="setup-properties, buildComponent">
         <echo msg="buildZip"/>
-
 
         <zip destfile="${destination.dir}/../com_${component.name}-${build.version}.zip"
              basedir="${destination.dir}/../com_${component.name}-${build.version}"/>
@@ -135,7 +135,15 @@
             </filterchain>
         </copy>
 
-
+	    <if>
+		    <isset property="libraries"/>
+		    <then>
+			    <foreach list="${libraries}" param="library" target="build-library-sources">
+				    <property name="destination.dir" value="${destination.dir}/libraries/${library}" override="true"/>
+			    </foreach>
+			    <property name="destination.dir" value="${destination.dir}" override="true"/>
+		    </then>
+	    </if>
 
         <if>
             <isset property="plugins"/>
