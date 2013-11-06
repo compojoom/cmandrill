@@ -26,7 +26,7 @@ class JFormFieldTemplates extends JFormFieldList
 	protected function getOptions()
 	{
 		$options = array();
-		$templates = cmandrillHelperMandrill::initMandrill()->templates->getList();
+		$templates = cmandrillHelperMandrill::initMandrill(false)->templates->getList();
 
 		foreach ($templates as $template)
 		{

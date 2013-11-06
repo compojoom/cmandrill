@@ -61,7 +61,7 @@ class JMail extends PHPMailer
 		$language->load('plg_system_mandrill.sys', JPATH_ADMINISTRATOR, $language->getDefault(), true);
 		$language->load('plg_system_mandrill.sys', JPATH_ADMINISTRATOR, null, true);
 
-		$this->mandrill = CmandrillHelperMandrill::initMandrill();
+		$this->mandrill = CmandrillHelperMandrill::initMandrill(false);
 
 		// Initialize the logger class
 		jimport('joomla.error.log');
@@ -644,23 +644,6 @@ class JMail extends PHPMailer
 			$message['tags'][] = 'function_' . $who['function'];
 		}
 
-		// Let us set some tags
-//		$input = JFactory::getApplication()->input;
-//
-//		if ($input->get('option'))
-//		{
-//			$message['tags'][] = 'component_' . $input->get('option');
-//		}
-//
-//		if ($input->get('view'))
-//		{
-//			$message['tags'][] = 'view_' . $input->get('view');
-//		}
-//
-//		if ($input->get('task'))
-//		{
-//			$message['tags'][] = 'task_' . $input->get('task');
-//		}
 
 		if (count($this->ReplyTo) > 0)
 		{
@@ -700,6 +683,7 @@ class JMail extends PHPMailer
 
 		// If we have a template, then use it!
 		$templateName = cmandrillHelperMandrill::getTemplate();
+
 
 		if ($templateName)
 		{

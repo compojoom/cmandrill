@@ -60,8 +60,8 @@ $listDirn = $this->escape($this->state->get('list.direction'));
 						<th><?php echo JHtml::_('grid.sort', 'COM_CMANDRILL_PUBLISH_DOWN', 'a.publish_down', $listDirn, $listOrder); ?></th>
 						<th><?php echo JHtml::_('grid.sort', 'COM_CMANDRILL_TEMPLATE', 'a.template', $listDirn, $listOrder); ?></th>
 						<th><?php echo JHtml::_('grid.sort', 'COM_CMANDRILL_COMPONENT', 'a.component', $listDirn, $listOrder); ?></th>
-						<th><?php echo JHtml::_('grid.sort', 'COM_CMANDRILL_VIEW', 'a.view', $listDirn, $listOrder); ?></th>
-						<th><?php echo JHtml::_('grid.sort', 'COM_CMANDRILL_TASK', 'a.task', $listDirn, $listOrder); ?></th>
+						<th><?php echo JHtml::_('grid.sort', 'COM_CMANDRILL_CLASS', 'a.class_name', $listDirn, $listOrder); ?></th>
+						<th><?php echo JHtml::_('grid.sort', 'COM_CMANDRILL_FUNCTION', 'a.function_name', $listDirn, $listOrder); ?></th>
 					</tr>
 					</thead>
 					<tbody>
@@ -82,8 +82,8 @@ $listDirn = $this->escape($this->state->get('list.direction'));
 								<td><?php echo $template->publish_down ?></td>
 								<td><?php echo $template->template ?></td>
 								<td><?php echo $template->component ?></td>
-								<td><?php echo $template->view ?></td>
-								<td><?php echo $template->task ?></td>
+								<td><?php echo $template->class_name ?></td>
+								<td><?php echo $template->function_name ?></td>
 							</tr>
 						<?php endforeach; ?>
 					<?php else : ?>

@@ -21,94 +21,16 @@ class CmandrillHelperMandrill
 	/**
 	 * Creates a new Mandrill object and passes the necessary parameters
 	 *
+	 * @param   bool  $cache  - true if we should cache the response
+	 *
 	 * @return CmandrillQuery
 	 */
-	public static function initMandrill()
+	public static function initMandrill($cache = true)
 	{
 		// Get the component parameters
 		$params = JComponentHelper::getParams('com_cmandrill');
 
-		return new CmandrillQuery($params->get('apiKey'), array( 'ssl' => $params->get('secure', 0)));
-	}
-
-	/**
-	 * @param           $category - api call category (users, messages, tags etc..)
-	 * @param           $action
-	 * @param \stdClass $data     - the data for the request
-	 * @param bool      $cache    - defines if we need to cache the request or not
-	 *
-	 * @return mixed
-	 */
-//	public static function send($category, $action, stdClass $data = null, $cache = true)
-//	{
-//		$response = false;
-//		$params = JComponentHelper::getParams('com_cmandrill');
-//
-//		$url = self::getUrl() . '/' . $category . '/' . $action . '.json';
-//
-//		if ($data === null)
-//		{
-//			$data = new stdClass();
-//		}
-//
-//		$data->key = $params->get('apiKey');
-//		$data = json_encode($data);
-//
-//		// cache only if not a message
-//		if ($cache)
-//		{
-//			// enable caching
-//			$cacheObj = JFactory::getCache('com_cmandrill', 'output');
-//			$cacheObj->setCaching(true);
-//			$id = md5($category . '/' . $action . '/' . $data);
-//			$response = $cacheObj->get($id);
-//		}
-//
-//		// so have we already cached the response?
-//		if (!$response)
-//		{
-//
-//			$ch = curl_init();
-//			curl_setopt($ch, CURLOPT_URL, $url);
-//			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-//
-//			curl_setopt($ch, CURLOPT_POST, 1);
-//			curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-//
-//			if ($params->get('secure'))
-//			{
-//				curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
-//				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-//				curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, true);
-//			}
-//
-//			$response = curl_exec($ch);
-//
-//
-//			if ($cache)
-//			{
-//				$cacheObj->store($response, $id);
-//			}
-//
-//			curl_close($ch);
-//		}
-//
-//		return json_decode($response);
-//	}
-
-	private static function getUrl()
-	{
-		$scheme = 'http';
-		$params = JComponentHelper::getParams('com_cmandrill');
-
-		if ($params->get('secure'))
-		{
-			$scheme = 'https';
-		}
-
-		$url = $scheme . '://mandrillapp.com/api/1.0';
-
-		return $url;
+		return new CmandrillQuery($params->get('apiKey'), $params->get('secure', 0), $cache);
 	}
 
 	/**
@@ -185,7 +107,6 @@ class CmandrillHelperMandrill
 
 		$db->setQuery($query);
 		$rows  = $db->loadObjectList();
-
 
 		$matches = array();
 
