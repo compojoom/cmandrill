@@ -58,6 +58,8 @@ class Com_CmandrillInstallerScript
 			return false;
 		}
 
+		$this->update = CmandrillInstallerHelper::checkIfUpdating();
+
 		return true;
 	}
 
@@ -91,12 +93,16 @@ class Com_CmandrillInstallerScript
 	 */
 	public function postflight($type, $parent)
 	{
-		$this->update = CmandrillInstallerHelper::checkIfUpdating();
-
 		switch ($this->update)
 		{
 			case 'plugin':
+				// If we are updating from the plugin, there is no need to continue with the other update
+				// procedures, as the component was never installed
 				CmandrillInstallerHelper::updateFromOldPlugin();
+				break;
+			case '2.0':
+			case '2.0.1':
+				CmandrillInstallerHelper::updateTo3_0();
 			case 'new':
 
 				break;
@@ -174,33 +180,65 @@ class CmandrillInstallerHelper
 	 */
 	public static function checkIfUpdating()
 	{
-		jimport('joomla.plugin.plugin');
-		$update = 'new';
-		$plugin = JPluginHelper::getPlugin('system', 'mandrill');
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
 
-		// If the mandrill plugin is there let us have a look at the manifest cache
-		// to determine if it is from a version that needs updating
-		if (is_object($plugin))
+		$query->select('manifest_cache')
+			->from('#__extensions')
+			->where('type =' . $db->Quote('plugin'))
+			->where('folder=' . $db->q('system'))
+			->where('element=' . $db->q('mandrill'));
+
+		$db->setQuery($query, 0, 1);
+
+		$plugin = $db->loadObject();
+
+		if ($plugin)
 		{
-			$db = JFactory::getDbo();
-			$query = $db->getQuery(true);
-
-			$query->select('manifest_cache')
-				->from('#__extensions')
-				->where('type =' . $db->Quote('plugin'))
-				->where('folder=' . $db->q('system'))
-				->where('element=' . $db->q('mandrill'));
-
-			$db->setQuery($query, 0, 1);
-			$params = new JRegistry($db->loadObject()->manifest_cache);
+			$params = new JRegistry($plugin->manifest_cache);
 
 			if (version_compare($params->get('version'), '1.0.2', 'le'))
 			{
-				$update = 'plugin';
+				return 'plugin';
 			}
 		}
 
-		return $update;
+		$query->clear();
+		$query->select('*')->from('#__extensions')
+			->where($db->qn('type') . '=' . $db->q('component'))
+			->where($db->qn('element') . '=' . $db->q('com_cmandrill'));
+
+		$db->setQuery($query, 0, 1);
+		$result = $db->loadObject();
+
+		if ($result)
+		{
+			$manifest = new JRegistry($result->manifest_cache);
+
+			$update = $manifest->get('version');
+
+			return $update;
+		}
+
+		return 'new';
+	}
+
+	/**
+	 * Update the component to version 3
+	 *
+	 * @return void
+	 */
+	public static function updateTo3_0()
+	{
+		$db = JFactory::getDbo();
+		$db->setQuery(
+			'ALTER TABLE ' . $db->qn('#__cmandrill_templates')
+			. ' DROP ' . $db->qn('view') . ','
+			. ' DROP ' . $db->qn('task') . ','
+			. ' ADD ' . $db->qn('class_name') . ' VARCHAR(255) NOT NULL,'
+			. ' ADD ' . $db->qn('function_name') . ' VARCHAR(255) NOT NULL;'
+		);
+		$db->execute();
 	}
 
 	/**
