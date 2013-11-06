@@ -595,6 +595,7 @@ class JMail extends PHPMailer
 		$to = array();
 		$attachments = $this->GetAttachments();
 		$mAttachments = array();
+		$iAttachments = array();
 
 		if (count($attachments) > 0)
 		{
@@ -613,11 +614,24 @@ class JMail extends PHPMailer
 					$this->phpMailerSend();
 				}
 
-				$mAttachments[] = array(
-					'name' => $attachment[2],
-					'type' => $mime_type,
-					'content' => $this->EncodeFile($attachment[0])
-				);
+				if (preg_match('/^image/', $mime_type))
+				{
+					// Image attachment
+					$iAttachments[] = array(
+						'name' => $attachment[2],
+						'type' => $mime_type,
+						'content' => $this->EncodeFile($attachment[0])
+					);
+				}
+				else
+				{
+					// Normall attachment
+					$mAttachments[] = array(
+						'name' => $attachment[2],
+						'type' => $mime_type,
+						'content' => $this->EncodeFile($attachment[0])
+					);
+				}
 			}
 		}
 
@@ -630,6 +644,11 @@ class JMail extends PHPMailer
 		if (count($mAttachments))
 		{
 			$message['attachments'] = $mAttachments;
+		}
+
+		if (count($iAttachments))
+		{
+			$message['images'] = $iAttachments;
 		}
 
 		$who = CmandrillHelperMandrill::whoIsSendingIt();
