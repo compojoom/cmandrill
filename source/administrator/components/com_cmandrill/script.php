@@ -51,8 +51,7 @@ class Com_CmandrillInstallerScript
 
 		require_once $path;
 
-		$this->installer = new CompojoomInstaller($type, $parent);
-		$this->installer->loadLanguage('com_cmandrill', $langPath);
+		$this->installer = new CompojoomInstaller($type, $parent, 'com_cmandrill');
 
 		if (!$this->installer->allowedInstall())
 		{
@@ -71,13 +70,9 @@ class Com_CmandrillInstallerScript
 	 */
 	public function uninstall($parent)
 	{
-		$path = JPATH_LIBRARIES . '/compojoom/include.php';
-		$langPath = JPATH_ADMINISTRATOR;
+		require_once JPATH_LIBRARIES . '/compojoom/include.php';
 
-		require_once $path;
-
-		$this->installer = new CompojoomInstaller('uninstall', $parent);
-		$this->installer->loadLanguage('com_cmandrill', $langPath);
+		$this->installer = new CompojoomInstaller('uninstall', $parent, 'com_cmandrill');
 
 		$this->status = new stdClass;
 		$this->status->plugins = $this->installer->uninstallPlugins($this->installationQueue['plugins']);
