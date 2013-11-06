@@ -15,11 +15,21 @@ if (!JFactory::getUser()->authorise('core.manage', 'com_cmandrill'))
 	throw new Exception(404, JText::_('JERROR_ALERTNOAUTHOR'));
 }
 
-// Magic: merge the default translation with the current translation
-$jlang = JFactory::getLanguage();
-$jlang->load('com_cmandrill', JPATH_ADMINISTRATOR, 'en-GB', true);
-$jlang->load('com_cmandrill', JPATH_ADMINISTRATOR, $jlang->getDefault(), true);
-$jlang->load('com_cmandrill', JPATH_ADMINISTRATOR, null, true);
+require_once JPATH_LIBRARIES . '/compojoom/include.php';
+
+if (!defined('COMPOJOOM_INCLUDED'))
+{
+	throw new Exception(
+		'Your CMandrill installation is broken; please re-install. Alternatively, extract the installation archive and copy the libraries/compojoom
+		 directory inside your site\'s directory.',
+		500
+	);
+}
+
+// Let us load the necessary langs
+CompojoomLanguage::load('lib_compojoom', JPATH_SITE);
+CompojoomLanguage::load('com_cmandrill', JPATH_SITE);
+CompojoomLanguage::load('com_cmandrill', JPATH_ADMINISTRATOR);
 
 JLoader::discover('cmandrillHelper', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/');
 JTable::addIncludePath(JPATH_COMPONENT . '/tables');

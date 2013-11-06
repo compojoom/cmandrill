@@ -98,6 +98,7 @@ $listDirn = $this->escape($this->state->get('list.direction'));
 
 
 				<?php echo cmandrillHelperUtility::footer(); ?>
+				<?php echo CompojoomHtmlTemplates::renderSocialMediaInfo(); ?>
 			</div>
 			<input type="hidden" name="task" value=""/>
 			<input type="hidden" name="boxchecked" value="0"/>
