@@ -302,8 +302,7 @@
 
       <note>
         <para>The HTML templates should be created directly in Mandrill. In
-        CMandrill you just assign those templates to specific components,
-        views or tasks.</para>
+        CMandrill you just assign those templates.</para>
       </note>
 
       <section>
@@ -345,12 +344,12 @@
           </listitem>
 
           <listitem>
-            <para>Class name - the php class name that is sending the
+            <para>Class name - the PHP class name that is sending the
             mail</para>
           </listitem>
 
           <listitem>
-            <para>Function name - the php function in the class that is
+            <para>Function name - the PHP function in the class that is
             sending the mail</para>
           </listitem>
         </itemizedlist>
@@ -372,7 +371,7 @@
 
           <para>1. On your site navigate to the registration view.</para>
 
-          <para>2. Fill out all the details and click register. </para>
+          <para>2. Fill out all the details and click register.</para>
 
           <para>3. Login in mandrillapp.com and look at the activity tab. The
           mail that was sent about the registration has the following tags:
@@ -382,7 +381,7 @@
           component select other, for class name enter UsersModelRegistration
           and for function name enter register. Save the template</para>
 
-          <para>5. That's it! Now the joomla registration emails will be sent
+          <para>5. That's it! Now the Joomla registration emails will be sent
           using the template that you've specified!</para>
         </example>
       </section>
@@ -413,7 +412,7 @@
     url="https://bitbucket.org/mailchimp/mandrill-api-php">PHP Mandrill
     wrapper</ulink>. Our goal with this library is to make it compatible with
     the Joomla Coding standards and make it easy for developers to use it in
-    their own projects based on the joomla framework, or in CLI scripts. If
+    their own projects based on the Joomla framework, or in CLI scripts. If
     you are interested in the library, check out the <ulink
     url="https://github.com/compojoom/lib_cmandrill">github
     repository</ulink>!</para>
@@ -504,18 +503,11 @@
 
       <itemizedlist>
         <listitem>
-          <para>option - identifies the Joomla component sending the
-          email</para>
+          <para>class_ - identifies the PHP class that sends the mail</para>
         </listitem>
 
         <listitem>
-          <para>view - identifies the view of the component sending the
-          mail</para>
-        </listitem>
-
-        <listitem>
-          <para>task - identifies the task that is executed by the component
-          sending the mail</para>
+          <para>function_ - identifies the function that sends the mail</para>
         </listitem>
       </itemizedlist>
 
