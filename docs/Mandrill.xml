@@ -58,6 +58,18 @@
             <surname>Dimitrov</surname>
           </author>
         </revision>
+
+        <revision>
+          <revnumber>Revision 0.3</revnumber>
+
+          <date>07.11.2013</date>
+
+          <author>
+            <firstname>Daniel</firstname>
+
+            <surname>Dimitrov</surname>
+          </author>
+        </revision>
       </revhistory></para>
   </article>
 
@@ -86,8 +98,8 @@
       </itemizedlist>
 
       <para>For example if a user registers on a website, most of the time he
-      will get a confirmation or welcome mail. This is a transactional email.
-      </para>
+      will get a confirmation or welcome mail. This is a transactional
+      email.</para>
     </section>
 
     <section>
@@ -179,8 +191,8 @@
         </listitem>
 
         <listitem>
-          <para>Create HTML templates for specific components and even further
-          define each view or task that should use that template</para>
+          <para>Create HTML templates for specific components by specifying
+          the class &amp; function names that send the mail</para>
         </listitem>
       </itemizedlist>
 
@@ -327,43 +339,52 @@
           </listitem>
 
           <listitem>
-            <para>Component - select the component that this template is for.
-            Use global if this template is meant to be used for the whole
-            website</para>
+            <para>Component - Use global if this template is meant to be used
+            for the whole website. Use other if you are defining a template
+            for a specific task</para>
           </listitem>
 
           <listitem>
-            <para>View - if you specify a view, this template will be only
-            used if the email that we send is sent through the matching
-            component &amp; view</para>
+            <para>Class name - the php class name that is sending the
+            mail</para>
           </listitem>
 
           <listitem>
-            <para>Task - the same as view. If you specify a task, we will try
-            to match the component that is used to send the mail, the view and
-            the task</para>
+            <para>Function name - the php function in the class that is
+            sending the mail</para>
           </listitem>
         </itemizedlist>
 
-        <important>
-          <para>If you want to create a component wide template, then only
-          specify the component name and leave the view and task empty</para>
-        </important>
-
         <note>
-          <para>Let us say that you want to set an HTML template only for new
-          registration mails. First of all you'll need to figure out which
-          component is sending the mails. Then you'll have to find out what
-          view &amp; task is used. CMigrator is helping you here as well. When
-          we send emails through the mandrill API we add few tags such as
-          component_name_of_component (ex. component_com_users), view such as
-          view_registration and task such as task_register. Just login into
-          mandrillapp.com and go to your Outbound-&gt; activity screen. There
-          you can see all the emails that we are sending together with the
-          tags. Just note the tags that you see there and use them when you
-          configure the form. (the name of the view and task are the values
-          after "view_" and "task_"</para>
+          <para>You may be wondering - how do I find the class name and
+          function name. Well if you are developer, you could always use the
+          your favorite code editor and dig into the code. On the other hand
+          there is a much easier way! Just trigger the task that you need a
+          custom template for. Once you do, look at the activity tab in
+          mandrill . You'll notice that the sent email has 2 tags -&gt; one
+          starting with class_ and the other one starting with function_ .
+          Those are your class name and function name. Just copy the part
+          after the underscore and you are ready to go!</para>
         </note>
+
+        <example>
+          <title>Example - custom template for the Registration view</title>
+
+          <para>1. On your site navigate to the registration view.</para>
+
+          <para>2. Fill out all the details and click register. </para>
+
+          <para>3. Login in mandrillapp.com and look at the activity tab. The
+          mail that was sent about the registration has the following tags:
+          class_UsersModelRegistration &amp; function_register</para>
+
+          <para>4. Now go to CMandrill -&gt; templates -&gt; new. For
+          component select other, for class name enter UsersModelRegistration
+          and for function name enter register. Save the template</para>
+
+          <para>5. That's it! Now the joomla registration emails will be sent
+          using the template that you've specified!</para>
+        </example>
       </section>
     </section>
   </chapter>
@@ -382,6 +403,20 @@
       you receive then should be coming from mandrill. (look at the sender's
       name)</para>
     </note>
+  </chapter>
+
+  <chapter>
+    <title>The CMandrill library</title>
+
+    <para>Since version 3 the CMandrill component comes with a library called
+    CMandrill. This library is a fork of the official <ulink
+    url="https://bitbucket.org/mailchimp/mandrill-api-php">PHP Mandrill
+    wrapper</ulink>. Our goal with this library is to make it compatible with
+    the Joomla Coding standards and make it easy for developers to use it in
+    their own projects based on the joomla framework, or in CLI scripts. If
+    you are interested in the library, check out the <ulink
+    url="https://github.com/compojoom/lib_cmandrill">github
+    repository</ulink>!</para>
   </chapter>
 
   <chapter>
@@ -501,21 +536,17 @@
       <title>Email HTML templates</title>
 
       <para>You can have only 1 global template, but you can have as many
-      component's HTML templates. The component HTML templates can be used for
-      the whole component (this is when you don't specify a view and task) or
-      they can be used only on a specific view &amp; task.</para>
+      custom HTML templates as you wish.</para>
 
       <section>
         <title>How do we determine which template to use?</title>
 
         <para>When we are sending the mail we are trying to find out if you
-        have a template that matches all criteria - component, view &amp;
-        task. If we find such a template, we'll use it. If we don't find such
-        a template, then we will look just for a template for the current
-        component. If we find one, we will use this template to send the mail.
-        If we don't find one, then we'll search for a global template. If you
-        have one we'll use it. If you don't we'll send the mail without any
-        template (normally as plain-text)</para>
+        have a template that matches all criteria - class name and function
+        name. If we find such a template we are going to use it. If we don't,
+        then we will use the global template - if one is provided. If you
+        don't have a global template, then we will send the mail as plain
+        text.</para>
       </section>
 
       <section>
@@ -523,8 +554,8 @@
         mails</title>
 
         <para>If we determine that we need to use an HTML template, then we
-        need to slightly modify the content of the mail. Most mail in Joomla
-        is sent as plain-text. But if you are using an HTML template you want
+        need to slightly modify the content of the mail. Most mails in Joomla
+        are sent as plain-text. But if you are using an HTML template you want
         this plain text to be properly formatted. So that is why when we need
         to send an HTML template and we find out that the text is in
         plain-text we parse it and add &lt;br /&gt; where necessary &amp; we
@@ -544,7 +575,7 @@
 &lt;/div&gt;</programlisting>
 
         <para>This is where the content of the Joomla mail is going to be
-        inserted. </para>
+        inserted.</para>
       </section>
     </section>
   </chapter>
