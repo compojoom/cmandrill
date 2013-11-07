@@ -97,9 +97,16 @@ class CmandrillHelperMandrill
 		$where[] = $db->qn('function_name') . '=' . $db->q($who['function']);
 
 		// Get all matches including the global template
-		$query->select($db->qn('template') . ',component, class_name, function_name')->from($db->qn('#__cmandrill_templates'))
+		$query->select(
+				array(
+					$db->qn('template'),
+					$db->qn('component'),
+					$db->qn('class_name'),
+					$db->qn('function_name'),
+				)
+			)->from($db->qn('#__cmandrill_templates'))
 			->where(
-				implode(' OR ', $where)
+				'(' . implode(' OR ', $where) . ')'
 			)
 			->where('(' . $db->qn('publish_up') . ' = ' . $nullDate . ' OR ' . $db->qn('publish_up') . ' <= ' . $nowDate . ')')
 			->where('(' . $db->qn('publish_down') . ' = ' . $nullDate . ' OR ' . $db->qn('publish_down') . ' >= ' . $nowDate . ')')
@@ -138,7 +145,7 @@ class CmandrillHelperMandrill
 		{
 			$maxs = array_keys($matches, max($matches));
 
-			if ($maxs[0] !== 0)
+			if (isset($maxs[0]))
 			{
 				return $rows[$maxs[0]]->template;
 			}

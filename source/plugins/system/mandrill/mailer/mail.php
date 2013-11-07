@@ -703,7 +703,6 @@ class JMail extends PHPMailer
 		// If we have a template, then use it!
 		$templateName = cmandrillHelperMandrill::getTemplate();
 
-
 		if ($templateName)
 		{
 			$html = $this->Body;
