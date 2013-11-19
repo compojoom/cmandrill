@@ -1,3 +1,4 @@
 Changelog
 
+# changed the client name of api calls (lib_cmandrill and not mandrill-php)
 + adding support for images attachments
