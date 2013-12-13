@@ -1,4 +1,5 @@
 Changelog
 
+# better error reporting when we get a rejected email
 # changed the client name of api calls (lib_cmandrill and not mandrill-php)
 + adding support for images attachments

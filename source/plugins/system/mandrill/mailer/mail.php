@@ -750,7 +750,7 @@ class JMail extends PHPMailer
 			{
 				foreach ($data as $user)
 				{
-					$status[$user->status][] = array($user->email, '');
+					$status[$user->status][] = $user;
 				}
 			}
 		}
@@ -768,10 +768,17 @@ class JMail extends PHPMailer
 		 */
 		if (isset($status['rejected']) && count($status['rejected']))
 		{
-			$this->writeToLog(JText::sprintf('PLG_MANDRILL_EMAIL_TO_REJECTED', implode(',', $status['rejected'])));
+			// Clear the addresses
 			$this->ClearAddresses();
-			$this->addRecipient($status['rejected']);
 
+			// Go over each rejected address, add it to the log and then add it to the PHPMailer class
+			foreach ($status['rejected'] as $rejected)
+			{
+				$this->writeToLog(JText::sprintf('PLG_MANDRILL_EMAIL_TO_REJECTED', $rejected->email, $rejected->reject_reason));
+				$this->addRecipient($rejected->email);
+			}
+
+			// Now try to send with PhpMailer
 			return $this->phpMailerSend();
 		}
 
