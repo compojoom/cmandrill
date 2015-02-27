@@ -335,16 +335,17 @@ class JMail extends PHPMailer
 	/**
 	 * Add file attachments to the email
 	 *
-	 * @param   mixed  $attachment  Either a string or array of strings [filenames]
-	 * @param   mixed  $name        Either a string or array of strings [names]
-	 * @param   mixed  $encoding    The encoding of the attachment
-	 * @param   mixed  $type        The mime type
+	 * @param   mixed  $attachment   Either a string or array of strings [filenames]
+	 * @param   mixed  $name         Either a string or array of strings [names]
+	 * @param   mixed  $encoding     The encoding of the attachment
+	 * @param   mixed  $type         The mime type
+	 * @param   mixed  $disposition  Disposition to use
 	 *
 	 * @return  JMail  Returns this object for chaining.
 	 *
 	 * @since   11.1
 	 */
-	public function addAttachment($attachment, $name = '', $encoding = 'base64', $type = 'application/octet-stream')
+	public function addAttachment($attachment, $name = '', $encoding = 'base64', $type = 'application/octet-stream', $disposition = 'attachment')
 	{
 		// If the file attachments is an array, add each file... otherwise just add the one
 		if (isset($attachment))
@@ -353,12 +354,12 @@ class JMail extends PHPMailer
 			{
 				foreach ($attachment as $file)
 				{
-					parent::AddAttachment($file, $name, $encoding, $type);
+					parent::AddAttachment($file, $name, $encoding, $type, $disposition);
 				}
 			}
 			else
 			{
-				parent::AddAttachment($attachment, $name, $encoding, $type);
+				parent::AddAttachment($attachment, $name, $encoding, $type, $disposition);
 			}
 		}
 
