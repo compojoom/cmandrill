@@ -17,14 +17,9 @@ class CmandrillHelperUtility
 	 */
 	public static function footer()
 	{
-		$output = '<div class="footer small">
-									<strong>CMandrill</strong><br />
-									Copyright ©2008–' . date('Y') . ' Daniel Dimitrov / <a href="https://compojoom.com">compojoom.com</a><br />
-					CMandrill is Free software released under the GNU General Public License, version 2 of the license or –at your option– any later version published by the Free Software Foundation. <br />
-					<a href="http://mandrill.com">Mandrill®</a> & <a href="https://mailchimp.com/?pid=compojoom&source=website">Mailchimp®</a> are a registered trademarks of <a href="http://rocketsciencegroup.com/" target="_blank">The Rocket Science Group</a>.
-					</div>';
+		$layout = new CompojoomLayoutFile('footer.powered');
 
-		return $output;
+		return $layout->render(array());
 	}
 
 	/**
@@ -37,7 +32,7 @@ class CmandrillHelperUtility
 	public static function checkStatus()
 	{
 		$params = JComponentHelper::getParams('com_cmandrill');
-		$appl = JFactory::getApplication();
+		$appl   = JFactory::getApplication();
 
 		if ($params->get('apiKey'))
 		{
@@ -69,6 +64,7 @@ class CmandrillHelperUtility
 
 	/**
 	 * include the bootstrap css
+	 *
 	 * @return void
 	 */
 	public static function bootstrap()

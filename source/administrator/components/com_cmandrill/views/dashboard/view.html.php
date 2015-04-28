@@ -1,27 +1,32 @@
 <?php
 /**
- * @author Daniel Dimitrov - compojoom.com
- * @date: 14.01.13
+ * @author     Daniel Dimitrov - compojoom.com
+ * @date       : 14.01.13
  *
  * @copyright  Copyright (C) 2008 - 2013 compojoom.com . All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
  */
- 
+
 defined('_JEXEC') or die('Restricted access');
 
-class cmandrillViewDashboard extends JViewLegacy {
+class cmandrillViewDashboard extends JViewLegacy
+{
 
-	public function display($tpl = null) {
+	public function display($tpl = null)
+	{
 		$params = JComponentHelper::getParams('com_cmandrill');
-		$appl = JFactory::getApplication();
+		$appl   = JFactory::getApplication();
 
-		try {
+		try
+		{
 			cmandrillHelperUtility::checkStatus();
-		} catch (Exception $e) {
+		} catch (Exception $e)
+		{
 			$tpl = 'wrong';
 		}
 
-		if($params->get('apiKey') == '') {
+		if ($params->get('apiKey') == '')
+		{
 			$appl->enqueueMessage(JText::_('COM_CMANDRILL_EXTENSION_NOT_CONFIGURED_YET'), 'error');
 			$tpl = 'config';
 		}
@@ -31,21 +36,9 @@ class cmandrillViewDashboard extends JViewLegacy {
 		parent::display($tpl);
 	}
 
-	private function addToolbar() {
-		JToolbarHelper::title('CMandrill - '.JText::_('COM_CMANDRILL_DASHBOARD'), 'article.png');
-
+	private function addToolbar()
+	{
 		JToolbarHelper::preferences('com_cmandrill');
-		$view = JFactory::getApplication()->input->getCmd('view');
-		if(!$view) {
-			$view = 'dashboard';
-		}
-
-		if(JVERSION > 2.5) {
-			JHtmlSidebar::addEntry(JText::_('COM_CMANDRILL_DASHBOARD'), 'index.php?option=com_cmandrill', $view == 'dashboard');
-			JHtmlSidebar::addEntry(JText::_('COM_CMANDRILL_TEMPLATES'), 'index.php?option=com_cmandrill&view=templates', $view == 'templates');
-
-			return JHtmlSidebar::render();
-		}
 
 		return false;
 	}

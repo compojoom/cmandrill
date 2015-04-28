@@ -1,5 +1,6 @@
 <?php defined('_JEXEC') or die(); ?>
 
++ using the standard compojoom backend template
 # joomla 3.4 compatibility Strict Standards: Declaration of JMail::addAttachment() should be compatible with PHPMailer::addAttachment thanks: Hugh Messenger
 
 =====================================================================
