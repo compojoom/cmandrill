@@ -1,6 +1,24 @@
-Changelog
+<?php defined('_JEXEC') or die(); ?>
 
+# joomla 3.4 compatibility Strict Standards: Declaration of JMail::addAttachment() should be compatible with PHPMailer::addAttachment thanks: Hugh Messenger
+
+=====================================================================
+CMandrill 3.0.2 - Released 12-May-2014
+=====================================================================
 ~ using the latest version of the lib_compojoom
 # better error reporting when we get a rejected email
 # changed the client name of api calls (lib_cmandrill and not mandrill-php)
 + adding support for images attachments
+
+
+=====================================================================
+LEGEND
+=====================================================================
+! Note
++ New feature or addition
+^ Major change
+~ Small change
+$ Language change
+* Security fix
+# Bug fix
+- Feature removal
