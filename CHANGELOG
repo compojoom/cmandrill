@@ -1,5 +1,6 @@
 <?php defined('_JEXEC') or die(); ?>
 
++ added latest news rss + version information on the dashboard
 + checking if there is an update available on the dashboard
 + option to gather anonymous stats about the environment & configuration of the extension
 + added JED review request on the dashboard

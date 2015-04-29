@@ -34,6 +34,7 @@ class CmandrillViewDashboard extends JViewLegacy
 
 		// Run the automatic database check
 		$updateModel->checkAndFixDatabase();
+		$this->currentVersion = $updateModel->getVersion();
 
 		$this->updateStats = $statsModel->needsUpdate();
 
