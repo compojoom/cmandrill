@@ -1,5 +1,8 @@
 <?php defined('_JEXEC') or die(); ?>
 
++ checking if there is an update available on the dashboard
++ option to gather anonymous stats about the environment & configuration of the extension
++ added JED review request on the dashboard
 + using the standard compojoom backend template
 # joomla 3.4 compatibility Strict Standards: Declaration of JMail::addAttachment() should be compatible with PHPMailer::addAttachment thanks: Hugh Messenger
 

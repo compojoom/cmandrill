@@ -1,7 +1,8 @@
 <?php
 /**
- * @author     Daniel Dimitrov - compojoom.com
- * @date       : 14.01.13
+ * @package    Com_CMandrill
+ * @author     DanielDimitrov <daniel@compojoom.com>
+ * @date       29.04.15
  *
  * @copyright  Copyright (C) 2008 - 2013 compojoom.com . All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
@@ -21,10 +22,11 @@ $sent7      = $stats->last_7_days->sent;
 
 $days = abs(floor(strtotime('now') / (60 * 60 * 24)) - floor(strtotime($info->created_at) / (60 * 60 * 24)));
 
-$layout = new CompojoomLayoutFile('footer.powered');
-
 echo CompojoomHtmlCtemplate::getHead(CMandrillHelperMenu::getMenu(), 'dashboard', 'COM_CMANDRILL_DASHBOARD', '');
 ?>
+
+	<div id="updateNotice"></div>
+	<div id="jedNotice"></div>
 
 	<div class="row">
 		<div
@@ -198,4 +200,52 @@ echo CompojoomHtmlCtemplate::getHead(CMandrillHelperMenu::getMenu(), 'dashboard'
 <?php
 // Show Footer
 echo CompojoomHtmlCTemplate::getFooter(CmandrillHelperUtility::footer());
+?>
+
+<script type="text/javascript">
+	(function($) {
+		$(document).ready(function(){
+			$.ajax('index.php?option=com_cmandrill&task=update.updateinfo&tmpl=component', {
+				success: function(msg, textStatus, jqXHR)
+				{
+					// Get rid of junk before and after data
+					var match = msg.match(/###([\s\S]*?)###/);
+					data = match[1];
+
+					if (data.length)
+					{
+						$('#updateNotice').html(data);
+					}
+				}
+			})
+		});
+		$.ajax('index.php?option=com_cmandrill&task=jed.reviewed&tmpl=component&<?php echo JSession::getFormToken(); ?>=1', {
+			success: function(msg, textStatus, jqXHR)
+			{
+				// Get rid of junk before and after data
+				var match = msg.match(/###([\s\S]*?)###/);
+				data = match[1];
+
+				if (data.length)
+				{
+					$('#jedNotice').html(data);
+				}
+			}
+		})
+	})(jQuery);
+</script>
+
+<?php if($this->updateStats): ?>
+	<script type="text/javascript">
+		(function($) {
+			$(document).ready(function(){
+				$.ajax('index.php?option=com_cmandrill&task=stats.send&tmpl=component&<?php echo JSession::getFormToken(); ?>=1', {
+					dataType: 'json',
+					success: function(msg) {}
+				});
+			});
+		})(jQuery);
+	</script>
+<?php endif; ?>
+
 

@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <config>
-
-	<fieldset name="basic">
+	<fieldset name="basic"  addfieldpath="/libraries/compojoom/form/fields">
+		<field name="library_load" type="loadcompojoom"
+		       hidden="true" extension="com_cmandrill" />
 		<field name="apiKey" type="text" default="" size="50" label="COM_CMANDRILL_MANDRILL_API_KEY"
 			   description="COM_CMANDRILL_MANDRILL_API_KEY_DESC" required="true"/>
-		<field name="secure" type="radio" default="0" label="COM_CMANDRILL_MANDRILL_HTTPS"
+		<field name="secure" type="radio" default="0" label="COM_CMANDRILL_MANDRILL_HTTPS" class="btn-group"
 			   description="COM_CMANDRILL_MANDRILL_USE_HTTPS_DESC">
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
+		<field name="update_stats" label="LIB_COMPOJOOM_UPDATE_STATS_LABEL"
+		       description="LIB_COMPOJOOM_UPDATE_STATS_DESC"
+		       class="btn-group" type="radio" default="1">
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+
+		<field type="hidden" name="jed" default="0" />
 	</fieldset>
 
 
