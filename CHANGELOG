@@ -1,5 +1,9 @@
 <?php defined('_JEXEC') or die(); ?>
 
++ support for bcc mails
++ support for cc mails
++ support for all kind of attachements up to 25MB
++ support for inline images
 + added latest news rss + version information on the dashboard
 + checking if there is an update available on the dashboard
 + option to gather anonymous stats about the environment & configuration of the extension

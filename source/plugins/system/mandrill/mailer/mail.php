@@ -48,12 +48,18 @@ class JMail extends PHPMailer
 	protected static $instances = array();
 
 	/**
+	 * @var    string  Charset of the message.
+	 * @since  11.1
+	 */
+	public $CharSet = 'utf-8';
+
+	/**
 	 * Constructor
 	 */
 	public function __construct()
 	{
 		// Phpmailer has an issue using the relative path for it's language files
-		$this->SetLanguage('joomla', JPATH_PLATFORM . '/phpmailer/language/');
+		$this->SetLanguage('joomla', JPATH_PLATFORM . '/joomla/mail/language/');
 
 		// Load the admin language
 		$language = JFactory::getLanguage();
@@ -106,7 +112,7 @@ class JMail extends PHPMailer
 	 */
 	public function Send()
 	{
-		if (!$this->isDailyQuotaExeeded() && !count($this->cc))
+		if (!$this->isDailyQuotaExeeded())
 		{
 			return $this->mandrillSend();
 		}
@@ -124,33 +130,28 @@ class JMail extends PHPMailer
 	 */
 	public function phpMailerSend()
 	{
-		if (($this->Mailer == 'mail') && !function_exists('mail'))
+		if (JFactory::getConfig()->get('mailonline', 1))
 		{
-			if (class_exists('JError'))
-			{
-				return JError::raiseNotice(500, JText::_('JLIB_MAIL_FUNCTION_DISABLED'));
-			}
-			else
+			if (($this->Mailer == 'mail') && !function_exists('mail'))
 			{
 				throw new RuntimeException(sprintf('%s::Send mail not enabled.', get_class($this)));
 			}
-		}
 
-		@$result = parent::Send();
+			$result = parent::send();
 
-		if ($result == false)
-		{
-			if (class_exists('JError'))
-			{
-				$result = JError::raiseNotice(500, JText::_($this->ErrorInfo));
-			}
-			else
+			if ($result == false)
 			{
 				throw new RuntimeException(sprintf('%s::Send failed: "%s".', get_class($this), $this->ErrorInfo));
 			}
-		}
 
-		return $result;
+			return $result;
+		}
+		else
+		{
+			JFactory::getApplication()->enqueueMessage(JText::_('JLIB_MAIL_FUNCTION_OFFLINE'));
+
+			return false;
+		}
 	}
 
 	/**
@@ -171,22 +172,24 @@ class JMail extends PHPMailer
 			if (isset($from[2]))
 			{
 				// If it is an array with entries, use them
-				$this->SetFrom(JMailHelper::cleanLine($from[0]), JMailHelper::cleanLine($from[1]), (bool) $from[2]);
+				$this->setFrom(JMailHelper::cleanLine($from[0]), JMailHelper::cleanLine($from[1]), (bool) $from[2]);
 			}
 			else
 			{
-				$this->SetFrom(JMailHelper::cleanLine($from[0]), JMailHelper::cleanLine($from[1]));
+				$this->setFrom(JMailHelper::cleanLine($from[0]), JMailHelper::cleanLine($from[1]));
 			}
 		}
 		elseif (is_string($from))
 		{
 			// If it is a string we assume it is just the address
-			$this->SetFrom(JMailHelper::cleanLine($from));
+			$this->setFrom(JMailHelper::cleanLine($from));
 		}
 		else
 		{
-			// If it is neither, we throw a warning
+			// If it is neither, we log a message and throw an exception
 			JLog::add(JText::sprintf('JLIB_MAIL_INVALID_EMAIL_SENDER', $from), JLog::WARNING, 'jerror');
+
+			throw new UnexpectedValueException(sprintf('Invalid email Sender: %s, JMail::setSender(%s)', $from));
 		}
 
 		return $this;
@@ -229,6 +232,61 @@ class JMail extends PHPMailer
 	}
 
 	/**
+	 * Add recipients to the email.
+	 *
+	 * @param   mixed   $recipient  Either a string or array of strings [email address(es)]
+	 * @param   mixed   $name       Either a string or array of strings [name(s)]
+	 * @param   string  $method     The parent method's name.
+	 *
+	 * @return  JMail  Returns this object for chaining.
+	 *
+	 * @since   11.1
+	 * @throws  InvalidArgumentException
+	 */
+	protected function add($recipient, $name = '', $method = 'addAddress')
+	{
+		$method = lcfirst($method);
+
+		// If the recipient is an array, add each recipient... otherwise just add the one
+		if (is_array($recipient))
+		{
+			if (is_array($name))
+			{
+				$combined = array_combine($recipient, $name);
+
+				if ($combined === false)
+				{
+					throw new InvalidArgumentException("The number of elements for each array isn't equal.");
+				}
+
+				foreach ($combined as $recipientEmail => $recipientName)
+				{
+					$recipientEmail = JMailHelper::cleanLine($recipientEmail);
+					$recipientName = JMailHelper::cleanLine($recipientName);
+					call_user_func('parent::' . $method, $recipientEmail, $recipientName);
+				}
+			}
+			else
+			{
+				$name = JMailHelper::cleanLine($name);
+
+				foreach ($recipient as $to)
+				{
+					$to = JMailHelper::cleanLine($to);
+					call_user_func('parent::' . $method, $to, $name);
+				}
+			}
+		}
+		else
+		{
+			$recipient = JMailHelper::cleanLine($recipient);
+			call_user_func('parent::' . $method, $recipient, $name);
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Add recipients to the email
 	 *
 	 * @param   mixed  $recipient  Either a string or array of strings [email address(es)]
@@ -240,60 +298,27 @@ class JMail extends PHPMailer
 	 */
 	public function addRecipient($recipient, $name = '')
 	{
-		// If the recipient is an array, add each recipient... otherwise just add the one
-		if (is_array($recipient))
-		{
-			foreach ($recipient as $to)
-			{
-				$to = JMailHelper::cleanLine($to);
-				$this->AddAddress($to);
-			}
-		}
-		else
-		{
-			$recipient = JMailHelper::cleanLine($recipient);
-			$this->AddAddress($recipient);
-		}
+		$this->add($recipient, $name, 'addAddress');
 
 		return $this;
 	}
 
 	/**
-	 * This method is not implemented in Mailchimp's Mandrill, so we just log the attempt to send a CC
+	 * Add carbon copy recipients to the email
 	 *
-	 * @param   mixed   $cc    - Either a string or array of strings [e-mail address(es)]
-	 * @param   string  $name  - cc name
+	 * @param   mixed  $cc    Either a string or array of strings [email address(es)]
+	 * @param   mixed  $name  Either a string or array of strings [name(s)]
 	 *
-	 * @return JMail
+	 * @return  JMail  Returns this object for chaining.
+	 *
+	 * @since   11.1
 	 */
 	public function addCC($cc, $name = '')
 	{
-		$message = 'the addCC method is not supported by the mailchip\'s Mandrill API. We will send this mail with PHPMailer';
-
-		// If the carbon copy recipient is an aray, add each recipient... otherwise just add the one
+		// If the carbon copy recipient is an array, add each recipient... otherwise just add the one
 		if (isset($cc))
 		{
-			if (is_array($cc))
-			{
-				foreach ($cc as $to)
-				{
-					$to = JMailHelper::cleanLine($to);
-					parent::AddCC($to);
-
-					$this->AddAnAddress('cc', $to, '');
-
-					$this->writeToLog($message);
-				}
-			}
-			else
-			{
-				$cc = JMailHelper::cleanLine($cc);
-				parent::AddCC($cc);
-
-				$this->AddAnAddress('cc', $cc, '');
-
-				$this->writeToLog($message);
-			}
+			$this->add($cc, $name, 'addCC');
 		}
 
 		return $this;
@@ -314,52 +339,53 @@ class JMail extends PHPMailer
 		// If the blind carbon copy recipient is an array, add each recipient... otherwise just add the one
 		if (isset($bcc))
 		{
-			if (is_array($bcc))
-			{
-				foreach ($bcc as $to)
-				{
-					$to = JMailHelper::cleanLine($to);
-					parent::AddBCC($to);
-				}
-			}
-			else
-			{
-				$bcc = JMailHelper::cleanLine($bcc);
-				parent::AddBCC($bcc);
-			}
+			$this->add($bcc, $name, 'addBCC');
 		}
 
 		return $this;
 	}
 
 	/**
-	 * Add file attachments to the email
+	 * Add file attachment to the email
 	 *
-	 * @param   mixed  $attachment   Either a string or array of strings [filenames]
-	 * @param   mixed  $name         Either a string or array of strings [names]
-	 * @param   mixed  $encoding     The encoding of the attachment
-	 * @param   mixed  $type         The mime type
-	 * @param   mixed  $disposition  Disposition to use
+	 * @param   mixed   $path         Either a string or array of strings [filenames]
+	 * @param   mixed   $name         Either a string or array of strings [names]
+	 * @param   mixed   $encoding     The encoding of the attachment
+	 * @param   mixed   $type         The mime type
+	 * @param   string  $disposition  The disposition of the attachment
 	 *
 	 * @return  JMail  Returns this object for chaining.
 	 *
-	 * @since   11.1
+	 * @since   12.2
+	 * @throws  InvalidArgumentException
 	 */
-	public function addAttachment($attachment, $name = '', $encoding = 'base64', $type = 'application/octet-stream', $disposition = 'attachment')
+	public function addAttachment($path, $name = '', $encoding = 'base64', $type = 'application/octet-stream', $disposition = 'attachment')
 	{
 		// If the file attachments is an array, add each file... otherwise just add the one
-		if (isset($attachment))
+		if (isset($path))
 		{
-			if (is_array($attachment))
+			if (is_array($path))
 			{
-				foreach ($attachment as $file)
+				if (!empty($name) && count($path) != count($name))
 				{
-					parent::AddAttachment($file, $name, $encoding, $type, $disposition);
+					throw new InvalidArgumentException("The number of attachments must be equal with the number of name");
+				}
+
+				foreach ($path as $key => $file)
+				{
+					if (!empty($name))
+					{
+						parent::addAttachment($file, $name[$key], $encoding, $type);
+					}
+					else
+					{
+						parent::addAttachment($file, $name, $encoding, $type);
+					}
 				}
 			}
 			else
 			{
-				parent::AddAttachment($attachment, $name, $encoding, $type, $disposition);
+				parent::addAttachment($path, $name, $encoding, $type);
 			}
 		}
 
@@ -379,22 +405,7 @@ class JMail extends PHPMailer
 	 */
 	public function addReplyTo($replyto, $name = '')
 	{
-		// Take care of reply email addresses
-		if (is_array($replyto[0]))
-		{
-			foreach ($replyto as $to)
-			{
-				$to0 = JMailHelper::cleanLine($to[0]);
-				$to1 = JMailHelper::cleanLine($to[1]);
-				parent::AddReplyTo($to0, $to1);
-			}
-		}
-		else
-		{
-			$replyto0 = JMailHelper::cleanLine($replyto[0]);
-			$replyto1 = JMailHelper::cleanLine($replyto[1]);
-			parent::AddReplyTo($replyto0, $replyto1);
-		}
+		$this->add($replyto, $name, 'addReplyTo');
 
 		return $this;
 	}
@@ -487,20 +498,9 @@ class JMail extends PHPMailer
 	 *
 	 * @since   11.1
 	 */
-	public function sendMail(
-		$from,
-		$fromName,
-		$recipient,
-		$subject,
-		$body,
-		$mode = 0,
-		$cc = null,
-		$bcc = null,
-		$attachment = null,
-		$replyTo = null,
-		$replyToName = null)
+	public function sendMail($from, $fromName, $recipient, $subject, $body, $mode = false, $cc = null, $bcc = null, $attachment = null,
+		$replyTo = null, $replyToName = null)
 	{
-		$this->setSender(array($from, $fromName));
 		$this->setSubject($subject);
 		$this->setBody($body);
 
@@ -522,13 +522,17 @@ class JMail extends PHPMailer
 
 			for ($i = 0; $i < $numReplyTo; $i++)
 			{
-				$this->addReplyTo(array($replyTo[$i], $replyToName[$i]));
+				$this->addReplyTo($replyTo[$i], $replyToName[$i]);
 			}
 		}
 		elseif (isset($replyTo))
 		{
-			$this->addReplyTo(array($replyTo, $replyToName));
+			$this->addReplyTo($replyTo, $replyToName);
 		}
+
+		// Add sender to replyTo only if no replyTo received
+		$autoReplyTo = (empty($this->ReplyTo)) ? true : false;
+		$this->setSender(array($from, $fromName, $autoReplyTo));
 
 		return $this->Send();
 	}
@@ -592,44 +596,30 @@ class JMail extends PHPMailer
 	 */
 	private function mandrillSend()
 	{
-		$action = 'send';
 		$to = array();
 		$attachments = $this->GetAttachments();
-		$mAttachments = array();
+		$nAttachments = array();
 		$iAttachments = array();
 
 		if (count($attachments) > 0)
 		{
 			foreach ($attachments as $attachment)
 			{
-				// A lot of people are setting wrong mime_type when using the addAtachment function
-				// let us try to determine the mime_type ourselves on the base of the filename
-				$mime_type = $this->detectMimeType($attachment[1]);
-
-				if (!$mime_type)
+				if ($attachment[6] == 'inline')
 				{
-					$this->writeToLog(JText::sprintf('PLG_SYSTEM_MANDRILL_UNSUPPORTED_ATTACHMENT', $attachment[2], $mime_type));
-
-					// If one of the files is not an image/txt or pdf, then use standard phpmailer
-					// the mandrill api doesn't support other formats right now
-					$this->phpMailerSend();
-				}
-
-				if (preg_match('/^image/', $mime_type))
-				{
-					// Image attachment
+					// Inline attachment (normally image)
 					$iAttachments[] = array(
-						'name' => $attachment[2],
-						'type' => $mime_type,
+						'name' => $attachment[7],
+						'type' => $this->filenameToType($attachment[1]),
 						'content' => $this->EncodeFile($attachment[0])
 					);
 				}
 				else
 				{
-					// Normall attachment
-					$mAttachments[] = array(
+					// Normal attachment
+					$nAttachments[] = array(
 						'name' => $attachment[2],
-						'type' => $mime_type,
+						'type' => $this->filenameToType($attachment[1]),
 						'content' => $this->EncodeFile($attachment[0])
 					);
 				}
@@ -642,9 +632,9 @@ class JMail extends PHPMailer
 			'from_name' => $this->FromName
 		);
 
-		if (count($mAttachments))
+		if (count($nAttachments))
 		{
-			$message['attachments'] = $mAttachments;
+			$message['attachments'] = $nAttachments;
 		}
 
 		if (count($iAttachments))
@@ -684,20 +674,33 @@ class JMail extends PHPMailer
 		$message['track_opens'] = true;
 		$message['track_clicks'] = true;
 
-		$recipients = $this->to;
-
-		// Let us merge the bcc recipients with the to recipients. the Mandrill API
-		// will send an individual mail to everyone
-		if (count($this->bcc) > 0)
-		{
-			$recipients = array_merge($recipients, $this->bcc);
-		}
-
-		foreach ($recipients as $value)
+		// Add the to
+		foreach ($this->to as $value)
 		{
 			$to[] = array(
 				'email' => $value[0],
-				'name' => $value[1]
+				'name' => $value[1],
+				'type' => 'to'
+			);
+		}
+
+		// Add the cc
+		foreach ($this->cc as $value)
+		{
+			$to[] = array(
+				'email' => $value[0],
+				'name' => $value[1],
+				'type' => 'cc'
+			);
+		}
+
+		// Add the bcc
+		foreach ($this->bcc as $value)
+		{
+			$to[] = array(
+				'email' => $value[0],
+				'name' => $value[1],
+				'type' => 'bcc'
 			);
 		}
 
@@ -787,50 +790,6 @@ class JMail extends PHPMailer
 		if (isset($status['sent']) && count($status['sent']))
 		{
 			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Detect the mime type of the file
-	 *
-	 * @param   string  $filename  - the file name
-	 *
-	 * @return bool
-	 */
-	private function detectMimeType($filename)
-	{
-		$mime_types = array(
-
-			'txt' => 'text/plain',
-			'htm' => 'text/html',
-			'html' => 'text/html',
-			'php' => 'text/html',
-			'css' => 'text/css',
-
-			// Images
-			'png' => 'image/png',
-			'jpe' => 'image/jpeg',
-			'jpeg' => 'image/jpeg',
-			'jpg' => 'image/jpeg',
-			'gif' => 'image/gif',
-			'bmp' => 'image/bmp',
-			'ico' => 'image/vnd.microsoft.icon',
-			'tiff' => 'image/tiff',
-			'tif' => 'image/tiff',
-			'svg' => 'image/svg+xml',
-			'svgz' => 'image/svg+xml',
-
-			// Adobe
-			'pdf' => 'application/pdf'
-		);
-
-		$ext = strtolower(array_pop(explode('.', $filename)));
-
-		if (array_key_exists($ext, $mime_types))
-		{
-			return $mime_types[$ext];
 		}
 
 		return false;
