@@ -89,7 +89,7 @@ class CmandrillModelActivity extends JModelList
 		$search = 'search';
 		$state = $this->getState('filter.state');
 		$to = JFactory::getDate();
-		$from = JFactory::getDate()->sub(new DateInterval($this->getState('list.date_range')));
+		$from = JFactory::getDate()->sub(new DateInterval($this->getState('filter.date_range')));
 
 		if ($stats)
 		{
