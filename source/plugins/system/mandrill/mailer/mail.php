@@ -597,6 +597,7 @@ class JMail extends PHPMailer
 	private function mandrillSend()
 	{
 		$to = array();
+		$config = JComponentHelper::getParams('com_cmandrill');
 		$attachments = $this->GetAttachments();
 		$nAttachments = array();
 		$iAttachments = array();
@@ -631,6 +632,11 @@ class JMail extends PHPMailer
 			'from_email' => $this->From,
 			'from_name' => $this->FromName
 		);
+
+		if ($config->get('subaccount', ''))
+		{
+			$message["subaccount"] = $config->get('subaccount', '');
+		}
 
 		if (count($nAttachments))
 		{

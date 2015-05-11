@@ -64,12 +64,10 @@ class CmandrillViewDashboard extends JViewLegacy
 	/**
 	 * Add the toolbar buttons
 	 *
-	 * @return bool
+	 * @return void
 	 */
 	private function addToolbar()
 	{
 		JToolbarHelper::preferences('com_cmandrill');
-
-		return false;
 	}
 }

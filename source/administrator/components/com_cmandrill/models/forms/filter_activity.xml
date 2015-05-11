@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form addfieldpath="/administrator/components/com_cmandrill/models/fields">
+	<fields name="filter">
+		<field
+			name="search"
+			type="text"
+			label="COM_CONTENT_FILTER_SEARCH_DESC"
+			hint="JSEARCH_FILTER"
+			class="form-control"
+		/>
+
+		<field name="state" label="COM_CMANDRILL_MANDRILL_STATE_FILTER_LABEL"
+		       type="mandrillstate" multiple="true" class="form-control">
+			<option value="sent">COM_CMANDRILL_DELIVERED</option>
+			<option value="rejected">COM_CMANDRILL_REJECTED</option>
+			<option value="spam">COM_CMANDRILL_SPAM_COMPLAINTS</option>
+			<option value="unsub">COM_CMANDRILL_UNSUBSCRIBES</option>
+			<option value="bounced">COM_CMANDRILL_HARD_BOUNCES</option>
+			<option value="soft-bounced">COM_CMANDRILL_SOFT_BOUNCES</option>
+		</field>
+
+	</fields>
+
+	<fields name="list">
+		<field name="date_range"
+			   type="list" onchange="this.form.submit();" class="form-control">
+			<option value="P7D">COM_CMANDRIL_LAST_7_DAYS</option>
+			<option value="P14D">COM_CMANDRIL_LAST_14_DAYS</option>
+			<option value="P30D">COM_CMANDRIL_LAST_30_DAYS</option>
+			<option value="P60D">COM_CMANDRIL_LAST_60DAYS</option>
+			<option value="P90D">COM_CMANDRIL_LAST_90_DAYS</option>
+		</field>
+	</fields>
+</form>

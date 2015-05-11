@@ -27,26 +27,12 @@ if (!defined('COMPOJOOM_INCLUDED'))
 }
 
 // Let us load the necessary langs
-CompojoomLanguage::load('lib_compojoom', JPATH_SITE);
-CompojoomLanguage::load('com_cmandrill', JPATH_SITE);
+CompojoomLanguage::load('com_cmandrill', JPATH_SITE, true);
 CompojoomLanguage::load('com_cmandrill', JPATH_ADMINISTRATOR);
 
 JLoader::discover('cmandrillHelper', JPATH_COMPONENT_ADMINISTRATOR . '/helpers/');
 JTable::addIncludePath(JPATH_COMPONENT . '/tables');
 
-$input = JFactory::getApplication()->input;
-
-if ($input->getCmd('view', '') == 'liveupdate')
-{
-	JToolBarHelper::preferences('com_cmandrill');
-	LiveUpdate::handleRequest();
-
-	return;
-}
-
-// On 2.5 we need the bootstrap css so let's add it here
-cmandrillHelperUtility::bootstrap();
-
 $controller = JControllerLegacy::getInstance('Cmandrill');
-$controller->execute($input->getCmd('task'));
+$controller->execute( JFactory::getApplication()->input->getCmd('task'));
 $controller->redirect();

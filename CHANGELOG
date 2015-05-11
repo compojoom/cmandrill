@@ -1,5 +1,10 @@
 <?php defined('_JEXEC') or die(); ?>
 
+=====================================================================
+CMandrill 4.0.0 - Released 12-May-2015
+=====================================================================
++ added an activity view
++ added support for subaccounts
 + support for bcc mails
 + support for cc mails
 + support for all kind of attachements up to 25MB

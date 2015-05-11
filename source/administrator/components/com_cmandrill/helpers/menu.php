@@ -2,7 +2,7 @@
 /**
  * @package    Com_Cmandrill
  * @author     DanielDimitrov <daniel@compojoom.com>
- * @date       07.10.2014
+ * @date       10.05.2015
  *
  * @copyright  Copyright (C) 2008 - 2013 compojoom.com . All rights reserved.
  * @license    GNU General Public License version 2 or later; see LICENSE
@@ -43,6 +43,15 @@ class CMandrillHelperMenu
 			'children' => array(),
 			'label' => '',
 			'keywords' => 'lists comments'
+		);
+		$menu['activity'] = array(
+			'link' => 'index.php?option=com_cmandrill&view=activity',
+			'title' => 'COM_CMANDRILL_ACTIVITY',
+			'icon' => 'fa-bar-chart',
+			'anchor' => '',
+			'children' => array(),
+			'label' => '',
+			'keywords' => 'outbound'
 		);
 
 

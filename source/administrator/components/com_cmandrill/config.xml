@@ -5,6 +5,8 @@
 		       hidden="true" extension="com_cmandrill" />
 		<field name="apiKey" type="text" default="" size="50" label="COM_CMANDRILL_MANDRILL_API_KEY"
 			   description="COM_CMANDRILL_MANDRILL_API_KEY_DESC" required="true"/>
+		<field name="subaccount" type="subaccounts" default="" label="COM_CMANDRILL_MANDRILL_SUBACCOUNT_LABEL"
+			   description="COM_CMANDRILL_MANDRILL_SUBACCOUNT_DESC" addfieldpath="/administrator/components/com_cmandrill/models/fields"/>
 		<field name="secure" type="radio" default="0" label="COM_CMANDRILL_MANDRILL_HTTPS" class="btn-group"
 			   description="COM_CMANDRILL_MANDRILL_USE_HTTPS_DESC">
 			<option value="0">JNO</option>

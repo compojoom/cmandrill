@@ -10,7 +10,6 @@
 
 defined('_JEXEC') or die('Restricted access');
 
-JHtml::stylesheet('media/com_cmandrill/css/dashboard.css');
 $mandrill = CmandrillHelperMandrill::initMandrill();
 $urls     = $mandrill->urls->getList();
 
