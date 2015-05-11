@@ -36,6 +36,7 @@ class JFormFieldSubaccounts extends JFormFieldList
 
 		if (JComponentHelper::getParams('com_cmandrill')->get('apiKey', ''))
 		{
+			JLoader::discover('cmandrillHelper', JPATH_ADMINISTRATOR . '/components/com_cmandrill/helpers/');
 			$subaccounts = cmandrillHelperMandrill::initMandrill(false)->subaccounts->getList();
 
 			// Create a new option object based on the <option /> element.
