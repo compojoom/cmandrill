@@ -765,10 +765,17 @@ class JMail extends PHPMailer
 			}
 		}
 
-		// Queued mails??? Hm, maybe we've reached the API limit. Let us log this
-		if (isset($status['queue']) && count($status['queue']))
+		// Queued mails??? Strange beast with mandrill. Most probably the mail was sent, we log this and treat it as sent
+		if (isset($status['queued']) && count($status['queued']))
 		{
-			$this->writeToLog(JText::sprintf('PLG_MANDRILL_EMAIL_TO_QUEUED', implode(',', $status['queue'])));
+			foreach ($status['queued'] as $value)
+			{
+				$queuedMessage[] = $value->email;
+			}
+
+			$this->writeToLog(JText::sprintf('PLG_MANDRILL_EMAIL_TO_QUEUED', implode(',', $queuedMessage)));
+
+			return true;
 		}
 
 		/**
@@ -810,6 +817,6 @@ class JMail extends PHPMailer
 	 */
 	private function writeToLog($message)
 	{
-		JLog::add($message, JLog::WARNING);
+		JLog::add($message, JLog::WARNING, 'mandrill');
 	}
 }
